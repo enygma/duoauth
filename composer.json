@@ -1,0 +1,24 @@
+{
+    "name":"enygma/duoauth",
+    "type":"library",
+    "description":"PHP library to interface with the DuoAuth Two-Factor REST API",
+    "keywords":["duoauth", "twofactor", "rest", "api"],
+    "homepage":"https://github.com/enygma/duoauth.git",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Chris Cornutt",
+            "email":"ccornutt@phpdeveloper.org",
+            "homepage":"http://www.phpdeveloper.org/"
+        }
+    ],
+    "require":{
+        "php":">=5.3.1",
+        "guzzle/guzzle": "3.0.*@dev"
+    },
+    "autoload":{
+        "psr-0":{
+            "DuoAuth":"DuoAuth/"
+        }
+    }
+}
