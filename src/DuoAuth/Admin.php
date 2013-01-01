@@ -25,12 +25,38 @@ class Admin extends \DuoAuth\Connection
         return $request;
     }
 
+    /**
+     * Get the list of users for the current account
+     * 
+     * @return mixed|boolean User list or false if errored
+     */
     public function getUsers()
     {
         $request = $this->getRequest()
             ->setPath('/admin/v1/users');
 
         $response = $this->execute($request);
+        if (isset($response['response']) && !empty($response['response'])) {
+            return $response['response'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get the information for a single user
+     * 
+     * @param string $username Username to search on
+     * @return mixed/boolean Result if found, otherwise false
+     */
+    public function getUser($username)
+    {
+        $request = $this->getRequest()
+            ->setParams(array('username' => $username))
+            ->setPath('/admin/v1/users');
+
+        $response = $this->execute($request);
+
         if (isset($response['response']) && !empty($response['response'])) {
             return $response['response'];
         } else {
