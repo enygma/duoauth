@@ -36,8 +36,8 @@ class Admin extends \DuoAuth\Connection
             ->setPath('/admin/v1/users');
 
         $response = $this->execute($request);
-        if (isset($response['response']) && !empty($response['response'])) {
-            return $response['response'];
+        if ($response->success() == true) {
+            return $response->getBody();
         } else {
             return false;
         }
@@ -57,8 +57,8 @@ class Admin extends \DuoAuth\Connection
 
         $response = $this->execute($request);
 
-        if (isset($response['response']) && !empty($response['response'])) {
-            return $response['response'];
+        if ($response->success() == true) {
+            return $response->getBody();
         } else {
             return false;
         }
