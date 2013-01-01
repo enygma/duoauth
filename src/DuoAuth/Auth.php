@@ -14,7 +14,8 @@ class Auth extends \DuoAuth\Connection
         // ping the API
         $request = $this->getRequest()->setPath('/rest/v1/ping');
         $response = $this->execute($request);
-        return (isset($response['response']) && $response['response'] == 'pong') ? true : false;
+
+        return ($response->getBody() == 'pong') ? true : false;
     }
 
     /**
@@ -59,11 +60,12 @@ class Auth extends \DuoAuth\Connection
                 )
             );
         $response = $this->execute($request);
+        $body = $response->getBody();
 
-        if (isset($response['response']['result']) && $response['response']['result'] !== 'deny') {
+        if ($response->success() == true && $body->result !== 'deny') {
             return true;
         } else {
-            $this->setErrors($response['response']['status']);
+            $this->setErrors($body->status);
             return false;
         }
     }
