@@ -55,6 +55,12 @@ class Request
     private $errors = array();
 
     /**
+     * Additional options to use in building the hash
+     * @var array
+     */
+    private $hashOptions = array();
+
+    /**
      * Initialize the Request object
      */
     public function __construct()
@@ -91,6 +97,11 @@ class Request
         $paramStr = http_build_query($params);
 
         $hash = array();
+        $addlHashOptions = $this->getHashOptions();
+        if (!empty($addlHashOptions)) {
+            $hash = array_merge($hash, $addlHashOptions);
+        }
+
         $hash[] = strtoupper($this->getMethod());
         $hash[] = $this->getHostname();
         $hash[] = $this->getPath();
@@ -116,7 +127,8 @@ class Request
         $params = $this->getParams();
         ksort($params);
 
-        $request = $client->$method($path, null, $params)
+        // Guzzle doesn't add the date header, so we put it in manually
+        $request = $client->$method($path, array('Date' => date('r')), $params)
             ->setAuth($this->getIntKey(), $hash);
 
         try {
@@ -128,6 +140,17 @@ class Request
             return false;
         }
 
+    }
+
+    public function getHashOptions()
+    {
+        return $this->hashOptions;
+    }
+
+    public function setHashOptions($options)
+    {
+        $this->hashOptions = $options;
+        return $this;
     }
 
     /**
@@ -273,9 +296,9 @@ class Request
     }
 
     /**
-     * [setParams description]
+     * Set parameters on the request
      *
-     * @param [type] $params [description]
+     * @param array $params Set of parameters
      * @return \DuoAuth\Request instance
      */
     public function setParams($params)
@@ -283,6 +306,25 @@ class Request
         $this->params = $params;
         return $this;
     }
+
+    /**
+     * Set a single parameter on the request
+     *
+     * @param string $name Name of parameter
+     * @param string $value Value of parameter
+     * @return \DuoAuth\Request instance
+     */
+    public function setParam($name, $value)
+    {
+        $this->params[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Get the current request's params
+     * 
+     * @return array Parameter set
+     */
     public function getParams()
     {
         return $this->params;
