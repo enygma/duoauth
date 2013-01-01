@@ -127,6 +127,10 @@ class Request
         $params = $this->getParams();
         ksort($params);
 
+        if ($method == 'get') {
+            $path .= '?'.http_build_query($params);
+        }
+
         // Guzzle doesn't add the date header, so we put it in manually
         $request = $client->$method($path, array('Date' => date('r')), $params)
             ->setAuth($this->getIntKey(), $hash);
