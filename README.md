@@ -32,7 +32,7 @@ Include in your `composer.json` file:
     }
 }
 
-### Example Usage
+### Example Usage - Auth
 
 ```php
 <?php
@@ -58,7 +58,27 @@ if ($result == false) {
 ?>
 ```
 
-## Methods
+### Example Usage - Admin
+
+```php
+<?php
+$auth = new \DuoAuth\Admin($apiHostname, $secretKey, $intKey);
+
+// "preauth" a user to see if they're valid
+$result = $auth->preauth('ccornutt'); 
+var_dump($result);
+
+// get a list of the current account's users
+$result = $auth->getUsers();
+var_dump($result);
+
+// get the detail of the given user
+$result = $auth->getUser('ccornutt');
+var_dump($result);
+?>
+```
+
+### Methods - Auth
 
 **ping**
 
@@ -66,9 +86,31 @@ if ($result == false) {
 
 No parameters, makes a "heartbeat" request to the Duo Security API
 
+**preauth**
+
+*Parameters:*
+
+- username (string)
+
 **validateCode**
 
 *Parameters:*
 
 - username (string)
 - code (string)
+
+### Methods - Admin
+
+**getUsers**
+
+*Parameters:*
+
+No parameters, gets full user list with details
+
+
+**getUser**
+
+*Parameters:*
+
+- username (string)
+
