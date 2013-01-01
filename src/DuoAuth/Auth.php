@@ -203,6 +203,21 @@ class Auth
     }
 
     /**
+     * Execute (send) the given request
+     * 
+     * @param object $request Request object
+     * @return array Response data
+     */
+    public function execute($request)
+    {
+        $this->setCurrentRequest($request);
+        $response = $request->send();
+        $this->setCurrentResponse($response);
+
+        return $response;
+    }
+
+    /**
      * Ping the Duo API
      *
      * @return boolean Pass/fail on the ping
@@ -211,10 +226,27 @@ class Auth
     {
         // ping the API
         $request = $this->getRequest()->setPath('/rest/v1/ping');
-        $this->setCurrentRequest($request);
-        $response = $request->send();
-        $this->setCurrentResponse($response);
+        $response = $this->execute($request);
         return (isset($response['response']) && $response['response'] == 'pong') ? true : false;
+    }
+
+    /**
+     * Send a "preauth" request
+     * 
+     * @param string $username Username to check
+     * @return array Response data
+     */
+    public function preauth($username)
+    {
+        $request = $this->getRequest()
+            ->setPath('/rest/v1/preauth')
+            ->setMethod('POST')
+            ->setParams(
+                array('user' => $username)
+            );
+
+        $response = $this->execute($request);
+        return $response;
     }
 
     /**
@@ -239,9 +271,7 @@ class Auth
                     'phone'  => $device
                 )
             );
-        $this->setCurrentRequest($request);
-        $response = $request->send();
-        $this->setCurrentResponse($response);
+        $response = $this->execute($request);
 
         if (isset($response['response']['result']) && $response['response']['result'] !== 'deny') {
             return true;
