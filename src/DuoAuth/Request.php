@@ -135,22 +135,34 @@ class Request
         $request = $client->$method($path, array('Date' => date('r')), $params)
             ->setAuth($this->getIntKey(), $hash);
 
+        $response = new \DuoAuth\Response();
         try {
-            $response = $request->send();
-            return $response->json();
+            $response->setData($request->send());
+            return $response;
 
         } catch (\Exception $e) {
             $this->errors[] = $e->getMessage();
-            return false;
+            return $response;
         }
 
     }
 
+    /**
+     * Get additional options for the hash construction
+     * 
+     * @return array Additional options
+     */
     public function getHashOptions()
     {
         return $this->hashOptions;
     }
 
+    /**
+     * Set options to include in the hash
+     * 
+     * @param array $options Additional hash options
+     * @return \DuoAuth\Request instance
+     */
     public function setHashOptions($options)
     {
         $this->hashOptions = $options;
