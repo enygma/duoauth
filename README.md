@@ -26,11 +26,13 @@ you'll need to:
 
 Include in your `composer.json` file:
 
+`
 {
     "require": {
         "enygma/duoauth": "dev-master"
     }
 }
+`
 
 ### Example Usage - Auth
 
