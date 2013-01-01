@@ -29,6 +29,18 @@ class Auth
     private $errors = array();
 
     /**
+     * Current Request object
+     * @var \DuoAuth\Request
+     */
+    private $currentRequest = null;
+
+    /**
+     * Current Response
+     * @var array
+     */
+    private $currentResponse = null;
+
+    /**
      * Initialist the Auth object
      *
      * @param string $hostname API hostname
@@ -40,6 +52,50 @@ class Auth
         $this->setApiHostname($hostname);
         $this->setSecretKey($secret);
         $this->setIntKey($int);
+    }
+
+    /**
+     * Get the current Response object
+     * 
+     * @return \DuoAuth\Response instance
+     */
+    public function getCurrentRequest()
+    {
+        return $this->currentRequest;
+    }
+
+    /**
+     * Set current Request object
+     * 
+     * @param \DuoAuth\Request $request Request object
+     * @return \DuoAuth\Auth instance
+     */
+    public function setCurrentRequest(\DuoAuth\Request $request)
+    {
+        $this->currentRequest = $request;
+        return $this;
+    }
+
+    /**
+     * Get the current response information
+     * 
+     * @return array Response information
+     */
+    public function getCurrentResponse()
+    {
+        return $this->currentResponse;
+    }
+
+    /**
+     * Set the current response data
+     * 
+     * @param array $response Response data
+     * @return \DuoAuth\Auth instance
+     */
+    public function setCurrentResponse($response)
+    {
+        $this->currentResponse = $response;
+        return $this;
     }
 
     /**
@@ -155,7 +211,9 @@ class Auth
     {
         // ping the API
         $request = $this->getRequest()->setPath('/rest/v1/ping');
+        $this->setCurrentRequest($request);
         $response = $request->send();
+        $this->setCurrentResponse($response);
         return (isset($response['response']) && $response['response'] == 'pong') ? true : false;
     }
 
@@ -181,7 +239,9 @@ class Auth
                     'phone'  => $device
                 )
             );
+        $this->setCurrentRequest($request);
         $response = $request->send();
+        $this->setCurrentResponse($response);
 
         if (isset($response['response']['result']) && $response['response']['result'] !== 'deny') {
             return true;
