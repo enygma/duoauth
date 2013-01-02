@@ -34,3 +34,6 @@ Include in your `composer.json` file:
 }
 ```
 
+### More information...
+
+For more information on the functionality, see the wiki: https://github.com/enygma/duoauth/wiki/
