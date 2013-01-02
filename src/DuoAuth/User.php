@@ -31,46 +31,14 @@ class User extends \DuoAuth\Model
 
     protected $integration = 'admin';
 
-    public function find($params = null)
-    {
-        $request = $this->getRequest()
-            ->setPath('/admin/v1/users');
-
-        if ($params !== null && is_array($params)) {
-            $request->setParams($params);
-        }
-
-        $response = $request->send();
-
-        if ($response->success() == true) {
-            $body = $response->getBody();
-
-            if (is_array($body)) {
-                if (count($body) == 1) {
-                    $this->load($body[0]);
-                } else {
-                    $users = array();
-                    foreach ($body as $index => $user) {
-                        $u = new \DuoAuth\User();
-                        $u->load($user);
-                        $users[$index] = $u;
-                    }
-                    return $users;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
-
     public function findByUsername($username)
     {
-        return $this->find(array('username' => $username));
+        return $this->find('/admin/v1/users', '\\DuoAuth\\User', array('username' => $username));
     }
 
     public function findAll()
     {
-        return $this->find();
+        return $this->find('/admin/v1/users', '\\DuoAuth\\User');
     }
 
     public function preauth($username)
@@ -146,6 +114,30 @@ class User extends \DuoAuth\Model
                 }
             }
             return $phones;
+        }
+    }
+
+    public function associateDevice(\DuoAuth\Device $device)
+    {
+        if ($device instanceof \DuoAuth\Phone) {
+            $request = $this->getRequest()
+                ->setMethod('POST')
+                ->setParams(array('phone_id' => $device->phone_id))
+                ->setPath('/admin/v1/users/'.$this->user_id.'/phones');
+
+        } elseif ($device instanceof \DuoAuth\Token) {
+            $request = $this->getRequest()
+                ->setMethod('POST')
+                ->setParams(array('token_id' => $device->token_id))
+                ->setPath('/admin/v1/users/'.$this->user_id.'/tokens');
+        }
+
+        $response = $request->send();
+        if ($response->success() == true) {
+            $body = $response->getBody();
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
         }
     }
 }
