@@ -141,6 +141,12 @@ class User extends \DuoAuth\Model
         }
     }
 
+    /**
+     * Associate a device to the user
+     * 
+     * @param \DuoAuth\Device $device Device to associate
+     * @return boolean Pass/fail on association
+     */
     public function associateDevice(\DuoAuth\Device $device)
     {
         if ($device instanceof \DuoAuth\Phone) {
@@ -163,5 +169,54 @@ class User extends \DuoAuth\Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * Save the current user (supports new user creation)
+     * 
+     * @return boolean Pass/fail of save
+     */
+    public function save()
+    {
+        $response = null;
+
+        // save the current user
+        if ($this->user_id == null && $this->username !== null) {
+            $response = $this->create();
+        } else {
+            // not implemented yet (update)
+            return false;
+        }
+
+        if ($response !== null && $response->success() == true) {
+            $body = $response->getBody();
+            $this->load($body);
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Create a new user
+     * 
+     * @return \DuoAuth\Response
+     */
+    public function create()
+    {
+        $params = array(
+            'username' => $this->username,
+            'realname' => $this->realname,
+            'status' => 'active'
+        );
+     
+        $request = $this->getRequest()
+            ->setMethod('POST')
+            ->setParams($params)
+            ->setPath('/admin/v1/users');
+
+        $response = $request->send();
+
+        return $response;
     }
 }
