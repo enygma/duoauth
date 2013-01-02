@@ -39,6 +39,34 @@ class Phone extends \DuoAuth\Model
 
     protected $integration = 'admin';
 
+    /**
+     * Find the full list of Phones on the account
+     * 
+     * @return array Set of phone objects
+     */
+    public function findAll()
+    {
+        return $this->find('/admin/v1/phones', '\\DuoAuth\\Devices\\Phone');
+    }
+
+    /**
+     * Find a phone by its internal ID
+     * 
+     * @param string $phoneId Internal phone ID
+     * @return \DuoAuth\Devices\Phone instance
+     */
+    public function findById($phoneId)
+    {
+        return $this->find('/admin/v1/phones/'.$phoneId, '\\DuoAuth\\Devices\\Phone');
+    }
+
+    /**
+     * Associate this Phone with the given user
+     * 
+     * @param \DuoAuth\User $user User object
+     * @param string $phoneId Phone internal ID [optional]
+     * @return boolean Pass/fail on association
+     */
     public function associate(\DuoAuth\User $user, $phoneId = null)
     {
         $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
