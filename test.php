@@ -2,22 +2,26 @@
 
 require_once 'vendor/autoload.php';
 
-$intKey = 'your-integration-key';
-$secretKey = 'your-secret-key';
-$apiHostname = 'your-api-hostname';
+// Finding all users
+$user = new \DuoAuth\User();
+var_dump($user->findAll());
 
-$auth = new \DuoAuth\Auth($apiHostname, $secretKey, $intKey);
+// Finding a single user
+$user = new \DuoAuth\User();
+var_dump($user->findByUsername('ccornutt'));
+// or, alternatively
+var_dump($user->find(array('username' => 'ccornutt')));
 
-// ping the API
-$result = $auth->ping();
-echo 'ping: '.var_export($result, true) . "\n";
+// Validating a user's inputted code
+$user = new \DuoAuth\User();
+var_dump($user->findByUsername('ccornutt')->validateCode('user-inputted-code'));
 
-// validate a code given as an input to the script
-$result = $auth->validateCode('ccornutt', $_SERVER['argv'][1]);
-echo 'validate: '.var_export($result, true) . "\n";
+// Getting the user's phones
+$user = new \DuoAuth\User();
+var_dump($user->findByUsername('ccornutt')->getPhones());
 
-if ($result == false) {
-    print_r($auth->getErrors());
-}
-
+// Associating a phone with a user
+$user = new \DuoAuth\User();
+$phones = $user->findByUsername('ccornutt')->getPhones();
+var_dump($phone[0]->associate($user)); // yes, I know this just reassigns the phone to the same user...
 
