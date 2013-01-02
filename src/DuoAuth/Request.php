@@ -94,7 +94,7 @@ class Request
     {
         $params = $this->getParams();
         ksort($params);
-        $paramStr = http_build_query($params);
+        $paramStr = str_replace('+','%20',http_build_query($params));
 
         $hash = array();
         $addlHashOptions = $this->getHashOptions();
