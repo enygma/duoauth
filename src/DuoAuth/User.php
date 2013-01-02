@@ -31,16 +31,33 @@ class User extends \DuoAuth\Model
 
     protected $integration = 'admin';
 
+    /**
+     * Find a single user by username
+     * 
+     * @param string $username Username to search for
+     * @return boolean Pass/fail on find
+     */
     public function findByUsername($username)
     {
         return $this->find('/admin/v1/users', '\\DuoAuth\\User', array('username' => $username));
     }
 
+    /**
+     * Get a list of all users on the account
+     * 
+     * @return array Set of users (\DuoAuth\User)
+     */
     public function findAll()
     {
         return $this->find('/admin/v1/users', '\\DuoAuth\\User');
     }
 
+    /**
+     * Preauth the username given
+     * 
+     * @param string $username Username to preauth
+     * @return mixed|boolean Response body or false on fail
+     */
     public function preauth($username)
     {
         $request = $this->getRequest('auth')
@@ -58,6 +75,13 @@ class User extends \DuoAuth\Model
         }
     }
 
+    /**
+     * Validate the code given by the user
+     * 
+     * @param string $code User-inputted code
+     * @param string $device Device name (internal) [optional]
+     * @return boolean Pass/fail on validation
+     */
     public function validateCode($code, $device = 'phone1')
     {
         if ($this->username !== null) {
