@@ -130,6 +130,7 @@ class Model
             if (is_array($body)) {
                 if (count($body) == 1) {
                     $this->load($body[0]);
+                    return true;
                 } else {
                     $users = array();
                     foreach ($body as $index => $user) {
@@ -142,6 +143,7 @@ class Model
             } else {
                 // it's probably a single instance too
                 $this->load($body);
+                return true;
             }
         } else {
             return false;
