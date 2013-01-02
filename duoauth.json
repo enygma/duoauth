@@ -1,0 +1,14 @@
+{
+    "integrations": {
+        "admin": {
+            "secret": "your-secret-key",
+            "integration": "your-integration-key",
+            "hostname": "your-api-hostname"
+        },
+        "auth": {
+	    "secret": "your-secret-key",
+            "integration": "your-integration-key",
+            "hostname": "your-api-hostname"
+        }
+    }
+}
