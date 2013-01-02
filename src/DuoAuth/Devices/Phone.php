@@ -39,9 +39,11 @@ class Phone extends \DuoAuth\Model
 
     protected $integration = 'admin';
 
-    public function associateWithUser($userId, $phoneId = null)
+    public function associate(\DuoAuth\User $user, $phoneId = null)
     {
         $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
+        $userId = $user->user_id;
+
         $request = $this->getRequest()
             ->setMethod('POST')
             ->setParams(array('phone_id' => $phoneId))
@@ -49,7 +51,8 @@ class Phone extends \DuoAuth\Model
 
         $response = $request->send();
         if ($response->success() == true) {
-            return $response->getBody();
+            $body = $response->getBody();
+            return (empty($body)) ? true : false;
         } else {
             return false;
         }
