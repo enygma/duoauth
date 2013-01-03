@@ -30,8 +30,28 @@ class Model
     }
 
     /**
+     * Set properties for the model
+     *
+     * @param array $properties Properties to set
+     */
+    public function setProperties($properties)
+    {
+        $this->properties = $properties;
+    }
+
+    /**
+     * Get the current model's properties
+     *
+     * @return array Current properties
+     */
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    /**
      * Load the given data into the current object
-     * 
+     *
      * @param array $data Data to load
      * @return boolean True on finish
      */
@@ -56,7 +76,7 @@ class Model
                         $this->values[$index] = $value;
                     }
                 } else {
-                    $this->values[$index] = $value;        
+                    $this->values[$index] = $value;
                 }
             }
         }
@@ -65,19 +85,19 @@ class Model
 
     /**
      * Magic "get" method
-     * 
+     *
      * @param string $property Property name
      * @return mixed|null Property value if it exists, null if not
      */
     public function __get($property)
     {
-        return (array_key_exists($property, $this->values)) 
+        return (array_key_exists($property, $this->values))
             ? $this->values[$property] : null;
     }
 
     /**
      * Magic "set" method
-     * 
+     *
      * @param string $property Property name
      * @param mixed $value Property value
      */
@@ -88,7 +108,7 @@ class Model
 
     /**
      * Get a new Request instance
-     * 
+     *
      * @param string $integration Name of integration to use
      * @return null|\DuoAuth\Request
      */
@@ -107,7 +127,7 @@ class Model
 
     /**
      * Find records based on the given path and parameters
-     * 
+     *
      * @param string $path Path to request
      * @param string $type Namespaced object type/classname to return
      * @param array $params Set of parameters to apply to request
