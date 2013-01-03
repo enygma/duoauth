@@ -202,4 +202,25 @@ class User extends \DuoAuth\Model
             return false;
         }
     }
+
+    /**
+     * Delete the current user
+     * 
+     * @return boolean Success/fail of user delete
+     */
+    public function delete()
+    {
+        if ($this->user_id !== null) {
+            $request = $this->getRequest()
+                ->setMethod('DELETE')
+                ->setPath('/admin/v1/users/'.$this->user_id);
+
+            $response = $request->send();
+            $body = $response->getBody();
+
+            return ($response->success() == true && $body == '') ? true : false;
+        } else {
+            return false;
+        }
+    }
 }
