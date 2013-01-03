@@ -115,7 +115,7 @@ class Phone extends \DuoAuth\Model
             ->setMethod('POST')->setParams($params)->setPath($path);
 
         $response = $request->send();
-        
+
         if ($response->success() == true) {
             $body = $response->getBody();
             $this->load($body);
@@ -123,6 +123,70 @@ class Phone extends \DuoAuth\Model
         } else {
             return false;
         }
+    }
 
+    /**
+     * Delete the Phone device record
+     * 
+     * @return boolean Success/fail on delete
+     */
+    public function delete()
+    {
+        if ($this->phone_id !== null) {
+            $request = $this->getRequest()
+                ->setMethod('DELETE')
+                ->setParams($params)
+                ->setPath('/admin/v1/phones/'.$this->phone_id);
+
+            $response = $request->send();
+            $body = $response->getBody();
+
+            return ($response->success() == true && $body == '') ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Send activation message to the Phone
+     * 
+     * @return boolean Success/fail on send
+     */
+    public function smsActivation()
+    {
+        if ($this->phone_id !== null) {
+
+            $request = $this->getRequest()
+                ->setMethod('POST')
+                ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_activation');
+
+            $response = $request->send();
+
+            return ($response->success() == true) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Send SMS passcodes to the Phone
+     * 
+     * @return boolean Success/fail on send
+     */
+    public function smsPasscode()
+    {
+        if ($this->phone_id !== null) {
+
+            $request = $this->getRequest()
+                ->setMethod('POST')
+                ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_passcodes');
+
+            $response = $request->send();
+            $body = $response->getBody();
+
+            return ($response->success() == true && $body == '') ? true : false;
+        } else {
+            return false;
+        }
     }
 }
