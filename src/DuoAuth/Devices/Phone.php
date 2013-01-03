@@ -85,4 +85,44 @@ class Phone extends \DuoAuth\Model
             return false;
         }
     }
+
+    /**
+     * Create and update the Phone object
+     * 
+     * @return boolean Success/fail of phone update
+     */
+    public function save()
+    {
+        $path = ($this->phone_id == null)
+            ? '/admin/v1/phones' : '/admin/v1/phones';
+
+        // "number" is required
+        if ($this->number == null) {
+            return false;
+        }
+
+        $params = array(
+            'number' => $this->number,
+            'name' => $this->name,
+            'extension' => $this->extension,
+            'type' => $this->type,
+            'platform' => $this->platform,
+            'predelay' => $this->predelay,
+            'postdelay' => $this->postdelay
+        );
+
+        $request = $this->getRequest()
+            ->setMethod('POST')->setParams($params)->setPath($path);
+
+        $response = $request->send();
+        
+        if ($response->success() == true) {
+            $body = $response->getBody();
+            $this->load($body);
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
+        }
+
+    }
 }
