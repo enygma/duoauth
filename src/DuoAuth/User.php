@@ -178,32 +178,9 @@ class User extends \DuoAuth\Model
      */
     public function save()
     {
-        $response = null;
+        $path = ($this->user_id == null) 
+            ? '/admin/v1/users' : '/admin/v1/users/'.$this->user_id;
 
-        // save the current user
-        if ($this->user_id == null && $this->username !== null) {
-            $response = $this->create();
-        } else {
-            // not implemented yet (update)
-            return false;
-        }
-
-        if ($response !== null && $response->success() == true) {
-            $body = $response->getBody();
-            $this->load($body);
-            return (empty($body)) ? true : false;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Create a new user
-     * 
-     * @return \DuoAuth\Response
-     */
-    public function create()
-    {
         $params = array(
             'username' => $this->username,
             'realname' => $this->realname,
@@ -213,10 +190,16 @@ class User extends \DuoAuth\Model
         $request = $this->getRequest()
             ->setMethod('POST')
             ->setParams($params)
-            ->setPath('/admin/v1/users');
+            ->setPath($path);
 
         $response = $request->send();
 
-        return $response;
+        if ($response !== null && $response->success() == true) {
+            $body = $response->getBody();
+            $this->load($body);
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
+        }
     }
 }
