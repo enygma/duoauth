@@ -57,7 +57,11 @@ class Model
      */
     public function load($data)
     {
-        foreach (get_object_vars($data) as $index => $value) {
+        // if it's an object, get the values as an array
+        if (is_object($data)) {
+            $data = get_object_vars($data);
+        }
+        foreach ($data as $index => $value) {
             // see what the type is
             if (array_key_exists($index, $this->properties)) {
                 $config = $this->properties[$index];
@@ -168,5 +172,15 @@ class Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * Output the values of the object as an array
+     *
+     * @return array Current object values
+     */
+    public function toArray()
+    {
+        return $this->values;
     }
 }
