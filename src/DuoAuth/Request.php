@@ -2,8 +2,6 @@
 
 namespace DuoAuth;
 
-use Guzzle\Http\Client;
-
 class Request
 {
     /**
@@ -63,10 +61,12 @@ class Request
     /**
      * Initialize the Request object
      */
-    public function __construct()
+    public function __construct($client = null)
     {
-        // make the Guzzle client
-        $client = new Client();
+        if ($client == null) {
+            // make the Guzzle client
+            $client = new \Guzzle\Http\Client();
+        }
         $this->setClient($client);
     }
 
@@ -149,7 +149,7 @@ class Request
 
     /**
      * Get additional options for the hash construction
-     * 
+     *
      * @return array Additional options
      */
     public function getHashOptions()
@@ -159,7 +159,7 @@ class Request
 
     /**
      * Set options to include in the hash
-     * 
+     *
      * @param array $options Additional hash options
      * @return \DuoAuth\Request instance
      */
@@ -264,10 +264,10 @@ class Request
     /**
      * Set the client for the current request
      *
-     * @param \Guzzle\Http\Client $client Guzzle client
+     * @param $client Guzzle client
      * @return \DuoAuth\Request instance
      */
-    public function setClient(\Guzzle\Http\Client $client)
+    public function setClient($client)
     {
         $this->client = $client;
         return $this;
@@ -338,7 +338,7 @@ class Request
 
     /**
      * Get the current request's params
-     * 
+     *
      * @return array Parameter set
      */
     public function getParams()
