@@ -103,10 +103,8 @@ class User extends \DuoAuth\Model
             $response = $request->send();
             $body = $response->getBody();
             return ($response->success() == true && $body->result !== 'deny') ? true : false;
-        } else {
-            return false;
         }
-        
+        return false;
     }
 
     /**
