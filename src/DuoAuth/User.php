@@ -82,15 +82,19 @@ class User extends \DuoAuth\Model
      * @param string $device Device name (internal) [optional]
      * @return boolean Pass/fail on validation
      */
-    public function validateCode($code, $device = 'phone1')
+    public function validateCode($code, $username = null, $device = 'phone1')
     {
-        if ($this->username !== null) {
+        if ($this->username !== null && $username == null) {
+            return false;
+        } else {
+            $username = ($username !== null) ? $username : $this->username;
+
             $request = $this->getRequest('auth')
             ->setPath('/rest/v1/auth')
             ->setMethod('POST')
             ->setParams(
                 array(
-                    'user'   => $this->username,
+                    'user'   => $username,
                     'factor' => 'passcode',
                     'code'   => $code,
                     'phone'  => $device
