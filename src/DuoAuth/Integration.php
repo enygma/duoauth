@@ -2,8 +2,56 @@
 
 namespace DuoAuth;
 
-class Integration
+class Integration extends \DuoAuth\Model
 {
+    protected $properties = array(
+        'adminapi_admins' => array(
+            'type' => 'string'
+        ),
+        'adminapi_info' => array(
+            'type' => 'string'
+        ),
+        'adminapi_integrations' => array(
+            'type' => 'string'
+        ),
+        'adminapi_read_log' => array(
+            'type' => 'string'
+        ),
+        'adminapi_read_resource' => array(
+            'type' => 'string'
+        ),
+        'adminapi_settings' => array(
+            'type' => 'string'
+        ),
+        'adminapi_write_resource' => array(
+            'type' => 'string'
+        ),
+        'enroll_policy' => array(
+            'type' => 'string'
+        ),
+        'greeting' => array(
+            'type' => 'string'
+        ),
+        'integration_key' => array(
+            'type' => 'string'
+        ),
+        'name' => array(
+            'type' => 'string'
+        ),
+        'notes' => array(
+            'type' => 'string'
+        ),
+        'secret_key' => array(
+            'type' => 'string'
+        ),
+        'type' => array(
+            'type' => 'string'
+        ),
+        'visual_style' => array(
+            'type' => 'string'
+        )
+    );
+
     /**
      * Secret key (provided by Duo)
      * @var string
@@ -48,17 +96,6 @@ class Integration
                 }
             }
         }
-    }
-
-    public function getRequest()
-    {
-        $request = new \DuoAuth\Request();
-
-        $request->setHostname($this->getHostname())
-            ->setIntKey($this->getIntegration())
-            ->setSecretKey($this->getSecret());
-        
-        return $request;
     }
 
     /**
@@ -125,6 +162,23 @@ class Integration
     public function getHostname()
     {
         return $this->apiHostname;
+    }
+
+    /**
+     * Get the full list of integrations
+     * 
+     * @return array List of integrations data
+     */
+    public function findAll()
+    {
+        $this->integration = 'admin';
+        return $this->find('/admin/v1/integrations', '\\DuoAuth\\Integration');
+    }
+
+    public function findById($integrationId)
+    {
+        $this->integration = 'admin';
+        return $this->find('/admin/v1/integrations/'.$integrationId, '\\DuoAuth\\Integration');
     }
 }
 
