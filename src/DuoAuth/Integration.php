@@ -167,7 +167,7 @@ class Integration extends \DuoAuth\Model
     /**
      * Get the full list of integrations
      * 
-     * @return array List of integrations data
+     * @return array List of integration data (set of \DuoAuth\Integration)
      */
     public function findAll()
     {
@@ -175,10 +175,62 @@ class Integration extends \DuoAuth\Model
         return $this->find('/admin/v1/integrations', '\\DuoAuth\\Integration');
     }
 
+    /**
+     * Find an integration by its Integration ID
+     * 
+     * @param string $integrationId Integration ID to find
+     * @return \DuoAuth\Integration object
+     */
     public function findById($integrationId)
     {
         $this->integration = 'admin';
         return $this->find('/admin/v1/integrations/'.$integrationId, '\\DuoAuth\\Integration');
+    }
+
+    /**
+     * Create/update the given Integration
+     * 
+     * @param boolean $reset Send a key reset (integration key)
+     * @return boolean Success/fail of request
+     */
+    public function save($reset = false)
+    {
+        $path = ($this->integration_key == null) 
+            ? '/admin/v1/integrations' : '/admin/v1/integrations/'.$this->integration_key;
+
+        $params = array(
+            'name' => $this->name,
+            'enroll_policy' => $this->enroll_policy,
+            'greeting' => $this->greeting,
+            'notes' => $this->notes,
+            'visual_style' => $this->visual_style,
+            'adminapi_admins' => $this->adminapi_admins,
+            'adminapi_info' => $this->adminapi_info,
+            'adminapi_integrations' => $this->adminapi_integrations,
+            'adminapi_read_log' => $this->adminapi_read_log,
+            'adminapi_read_resource' => $this->adminapi_read_resource,
+            'adminapi_settings' => $this->adminapi_settings,
+            'adminapi_write_resource' => $this->adminapi_write_resource
+        );
+
+        if ($reset == true) {
+            $params['reset_secret_key'] = 1;
+        }
+     
+        $request = $this->getRequest()
+            ->setMethod('POST')
+            ->setParams($params)
+            ->setPath($path);
+
+        $response = $request->send();
+
+        if ($response !== null && $response->success() == true) {
+            $body = $response->getBody();
+            $this->load($body);
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
+        }
     }
 }
 
