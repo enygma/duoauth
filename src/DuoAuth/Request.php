@@ -86,16 +86,28 @@ class Request
     }
 
     /**
-     * Build the hash header based off values in the current object
+     * Build canonical parameter string based off values in the current object
      *
-     * @return strin SHA1 hash for request contents
+     * @return string parameter string to be signed
      */
-    private function buildHashHeader()
+    protected function getCanonParams()
     {
         $params = $this->getParams();
         ksort($params);
-        $paramStr = str_replace('+','%20',http_build_query($params));
+        return str_replace(
+            array('+', '%7E'),
+            array('%20', '~'),
+            http_build_query($params)
+        );
+    }
 
+    /**
+     * Build canonical request to sign based off values in the current object
+     *
+     * @return string request string to be signed
+     */
+    protected function getCanonRequest()
+    {
         $hash = array();
         $addlHashOptions = $this->getHashOptions();
         if (!empty($addlHashOptions)) {
@@ -105,11 +117,23 @@ class Request
         $hash[] = strtoupper($this->getMethod());
         $hash[] = $this->getHostname();
         $hash[] = $this->getPath();
-        $hash[] = $paramStr;
+        $hash[] = $this->getCanonParams();
 
-        $hash = hash_hmac('sha1', implode("\n", $hash), $this->getSecretKey());
+        return implode("\n", $hash);
+    }
 
-        return $hash;
+    /**
+     * Build the hash header based off values in the current object
+     *
+     * @return string SHA1 hash for request contents
+     */
+    private function buildHashHeader()
+    {
+        return hash_hmac(
+            'sha1',
+            $this->getCanonRequest(),
+            $this->getSecretKey()
+        );
     }
 
     /**
