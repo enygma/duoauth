@@ -225,7 +225,7 @@ class Request
      */
     public function setHostname($hostname)
     {
-        $this->hostname = $hostname;
+        $this->hostname = strtolower($hostname);
         return $this;
     }
 
