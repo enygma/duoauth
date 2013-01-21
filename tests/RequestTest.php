@@ -69,7 +69,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $this->request->setPath('/foo/bar');
         $this->assertEquals(
-            '/foo/bar.json',
+            '/foo/bar',
             $this->request->getPath()
         );
     }

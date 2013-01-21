@@ -287,14 +287,12 @@ class Request
      * [setPath description]
      *
      * @param string $path Path to set
-     * @param string $format Format for reqponse (default: json)
+     * @param string $format Format for reqponse (default: json). Only supported when calling the Verify or REST APIs.
      * @return \DuoAuth\Request instance
      */
     public function setPath($path, $format = null)
     {
-        if ($format == null && strpos($path, '.json') == false) {
-            $path .= '.json';
-        } elseif ($format !== null) {
+        if ($format !== null) {
             $path .= '.'.$format;
         }
         $this->path = $path;
