@@ -33,7 +33,7 @@ class User extends \DuoAuth\Model
 
     /**
      * Find a single user by username
-     * 
+     *
      * @param string $username Username to search for
      * @return boolean Pass/fail on find
      */
@@ -44,17 +44,17 @@ class User extends \DuoAuth\Model
 
     /**
      * Get a list of all users on the account
-     * 
+     *
      * @return array Set of users (\DuoAuth\User)
      */
     public function findAll()
     {
-        return $this->find('/admin/v1/users', '\\DuoAuth\\User');
+        return $this->find('/admin/v1/users');
     }
 
     /**
      * Preauth the username given
-     * 
+     *
      * @param string $username Username to preauth
      * @return mixed|boolean Response body or false on fail
      */
@@ -77,7 +77,7 @@ class User extends \DuoAuth\Model
 
     /**
      * Validate the code given by the user
-     * 
+     *
      * @param string $code User-inputted code
      * @param string $device Device name (internal) [optional]
      * @return boolean Pass/fail on validation
@@ -111,7 +111,7 @@ class User extends \DuoAuth\Model
      * Get the phones for the given user ID
      *     NOTE: If user is already fetched and phones exist, those are returned
      *           Otherwise, it either tries to use the user_id or the given $userId
-     * 
+     *
      * @param $string $userId User ID [optional]
      * @return array List of phones
      */
@@ -145,7 +145,7 @@ class User extends \DuoAuth\Model
 
     /**
      * Associate a device to the user
-     * 
+     *
      * @param \DuoAuth\Device $device Device to associate
      * @return boolean Pass/fail on association
      */
@@ -175,12 +175,12 @@ class User extends \DuoAuth\Model
 
     /**
      * Save the current user (supports new user creation)
-     * 
+     *
      * @return boolean Pass/fail of save
      */
     public function save()
     {
-        $path = ($this->user_id == null) 
+        $path = ($this->user_id == null)
             ? '/admin/v1/users' : '/admin/v1/users/'.$this->user_id;
 
         $params = array(
@@ -188,7 +188,7 @@ class User extends \DuoAuth\Model
             'realname' => $this->realname,
             'status' => 'active'
         );
-     
+
         $request = $this->getRequest()
             ->setMethod('POST')
             ->setParams($params)
@@ -207,7 +207,7 @@ class User extends \DuoAuth\Model
 
     /**
      * Delete the current user
-     * 
+     *
      * @return boolean Success/fail of user delete
      */
     public function delete()
