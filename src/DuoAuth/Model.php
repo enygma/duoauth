@@ -22,6 +22,12 @@ class Model
      */
     protected $integration = null;
 
+    /**
+     * Current Request object
+     * @var \DuoAuth\Request
+     */
+    protected $request = null;
+
     public function __construct($data = null)
     {
         if ($data !== null) {
@@ -111,12 +117,30 @@ class Model
     }
 
     /**
-     * Get a new Request instance
+     * Get a new/existing Request instance
      *
      * @param string $integration Name of integration to use
+     * @param boolean $force Force a refresh of the request object
      * @return null|\DuoAuth\Request
      */
-    public function getRequest($integration = null)
+    public function getRequest($integration = null, $force = false)
+    {
+        if ($force == true || $this->request == null) {
+            $request = $this->getRequestFromIntegration($integration);
+            $this->setRequest($request);
+            return $this->request;
+        } else {
+            return $this->request;
+        }
+    }
+
+    /**
+     * Build a request object from an Integration
+     *
+     * @param string $integration Name of integration
+     * @return
+     */
+    public function getRequestFromIntegration($integration = null)
     {
         $integration = ($integration !== null) ? $integration : $this->integration;
 
@@ -127,6 +151,18 @@ class Model
         } else {
             return null;
         }
+    }
+
+    /**
+     * Set the Request object for the current object
+     *
+     * @param \DuoAuth\Request $request Request object
+     * @return \DuoAuth\Model instance
+     */
+    public function setRequest(\DuoAuth\Request $request)
+    {
+        $this->request = $request;
+        return $this;
     }
 
     /**
@@ -141,8 +177,8 @@ class Model
      */
     public function find($path, $type = null, $params = null)
     {
-        $request = $this->getRequest()
-            ->setPath($path);
+        $request = $this->getRequest();
+        $request->setPath($path);
 
         if ($params !== null && is_array($params)) {
             $request->setParams($params);
@@ -166,7 +202,6 @@ class Model
                     }
                     $users = array();
                     foreach ($body as $index => $user) {
-                        var_export();
                         $u = new $type();
                         $u->load($user);
                         $users[$index] = $u;
