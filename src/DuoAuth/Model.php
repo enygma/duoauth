@@ -161,8 +161,12 @@ class Model
                     if ($type === null) {
                         $type = '\\'.get_class($this);
                     }
+                    if (!class_exists($type)) {
+                        throw new \InvalidArgumentException('Class type "'.$type.'" not valid');
+                    }
                     $users = array();
                     foreach ($body as $index => $user) {
+                        var_export();
                         $u = new $type();
                         $u->load($user);
                         $users[$index] = $u;
