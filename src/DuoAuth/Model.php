@@ -131,13 +131,15 @@ class Model
 
     /**
      * Find records based on the given path and parameters
+     *     NOTE: If "type" is not given, it detects the current class and
+     *     assumes you want a set of those
      *
      * @param string $path Path to request
-     * @param string $type Namespaced object type/classname to return
+     * @param string $type Namespaced object type/classname to return [optional]
      * @param array $params Set of parameters to apply to request
      * @return array|boolean Either it populates the current object, returns the set or false
      */
-    public function find($path, $type, $params = null)
+    public function find($path, $type = null, $params = null)
     {
         $request = $this->getRequest()
             ->setPath($path);
@@ -156,6 +158,9 @@ class Model
                     $this->load($body[0]);
                     return true;
                 } else {
+                    if ($type === null) {
+                        $type = '\\'.get_class($this);
+                    }
                     $users = array();
                     foreach ($body as $index => $user) {
                         $u = new $type();
