@@ -15,10 +15,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $r = new MockResponse();
         $r->setBody(json_encode($data));
         $response->setData($r);
-
-        $request = $this->getMockBuilder('\\DuoAuth\\Request', array('send'))
-            ->setConstructorArgs(array($mockClient))
-            ->getMock();
+        
+        $request = $this->getMock('\DuoAuth\Request', array('send'), array($mockClient));
 
         $request->expects($this->once())
             ->method('send')
@@ -50,6 +48,23 @@ class UserTest extends \PHPUnit_Framework_TestCase
                 $this->fail('Invalid object type returned - not a User');
             }
         }
+    }
+
+    /**
+     * Validate code from the user (a valid response)
+     * @covers \DuoAuth\User::validateCode
+     */
+    public function testValidateCodeValid()
+    {
+        $code = 'testing1234';
+        $results = array('response' => array('result' => 'allow'));
+        $user = new \DuoAuth\User();
+
+        $request = $this->buildMockRequest($results);
+        $user->setRequest($request);
+
+        $v = $user->validateCode($code);
+        $this->assertTrue($v);
     }
 }
 
