@@ -230,12 +230,17 @@ class User extends \DuoAuth\Model
      * Send a push login request to the user's device
      *     NOTE: Request waits for user to approve to finish (or timeout)
      * 
-     * @param string $device Identifier for user device (default "phone1")
+     * @param string $device Identifier for user device (default "phone1") [optional]
+     * @param string $username Username to send request to [optional]
      * @return boolean Success/fail of request
      */
-    public function sendPush($device = 'phone1')
+    public function sendPush($device = 'phone1', $username = null)
     {
-        if ($this->username !== null) {
+        if ($this->username == null && $username == null) {
+            return false;
+        } else {
+            $username = ($username !== null) ? $username : $this->username;
+
             $request = $this->getRequest('auth', true)
                 ->setPath('/rest/v1/auth')
                 ->setMethod('POST')
