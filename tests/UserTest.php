@@ -63,7 +63,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $request = $this->buildMockRequest($results);
         $user->setRequest($request);
 
-        $v = $user->validateCode($code);
+        $v = $user->validateCode($code, 'testuser');
         $this->assertTrue($v);
     }
 }
