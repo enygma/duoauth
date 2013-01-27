@@ -84,7 +84,7 @@ class User extends \DuoAuth\Model
      */
     public function validateCode($code, $username = null, $device = 'phone1')
     {
-        if ($this->username !== null && $username == null) {
+        if ($this->username == null && $username == null) {
             return false;
         } else {
             $username = ($username !== null) ? $username : $this->username;
