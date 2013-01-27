@@ -256,9 +256,6 @@ class User extends \DuoAuth\Model
             $body = $response->getBody();
 
             return ($response->success() == true && $body == '') ? true : false;
-        } else {
-            return false;
         }
-
     }
 }
