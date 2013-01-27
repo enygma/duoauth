@@ -225,4 +225,35 @@ class User extends \DuoAuth\Model
             return false;
         }
     }
+
+    /**
+     * Send a push login request to the user's device
+     *     NOTE: Request waits for user to approve to finish (or timeout)
+     * 
+     * @param string $device Identifier for user device (default "phone1")
+     * @return boolean Success/fail of request
+     */
+    public function sendPush($device = 'phone1')
+    {
+        if ($this->username !== null) {
+            $request = $this->getRequest('auth', true)
+                ->setPath('/rest/v1/auth')
+                ->setMethod('POST')
+                ->setParams(
+                    array(
+                        'user'   => $this->username,
+                        'factor' => 'push',
+                        'phone'  => $device
+                    )
+                );
+
+            $response = $request->send();
+            $body = $response->getBody();
+
+            return ($response->success() == true && $body == '') ? true : false;
+        } else {
+            return false;
+        }
+
+    }
 }
