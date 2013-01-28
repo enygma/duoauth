@@ -241,7 +241,7 @@ class User extends \DuoAuth\Model
         } else {
             $username = ($username !== null) ? $username : $this->username;
 
-            $request = $this->getRequest('auth', true)
+            $request = $this->getRequest('auth')
                 ->setPath('/rest/v1/auth')
                 ->setMethod('POST')
                 ->setParams(
