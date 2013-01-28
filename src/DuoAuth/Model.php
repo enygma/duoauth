@@ -123,7 +123,7 @@ class Model
      * @param boolean $force Force a refresh of the request object
      * @return null|\DuoAuth\Request
      */
-    public function getRequest($integration = null, $force = false)
+    public function getRequest($integration = null, $force = true)
     {
         if ($force == true || $this->request == null) {
             $request = $this->getRequestFromIntegration($integration);
