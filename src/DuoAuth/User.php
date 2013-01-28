@@ -232,30 +232,35 @@ class User extends \DuoAuth\Model
      * 
      * @param string $device Identifier for user device (default "phone1") [optional]
      * @param string $username Username to send request to [optional]
+     * @param array $addlInfo Additional info to send with the push [optional]
      * @return boolean Success/fail of request
      */
-    public function sendPush($device = 'phone1', $username = null)
+    public function sendPush($device = 'phone1', $username = null, $addlInfo = null)
     {
         if ($this->username == null && $username == null) {
             return false;
         } else {
             $username = ($username !== null) ? $username : $this->username;
 
+            $params = array(
+                'user'   => $this->username,
+                'factor' => 'push',
+                'phone'  => $device
+            );
+
+            if ($addlInfo !== null && is_array($addlInfo)) {
+                $params['pushinfo'] = http_build_query($addlInfo);
+            }
+
             $request = $this->getRequest('auth')
                 ->setPath('/rest/v1/auth')
                 ->setMethod('POST')
-                ->setParams(
-                    array(
-                        'user'   => $this->username,
-                        'factor' => 'push',
-                        'phone'  => $device
-                    )
-                );
+                ->setParams($params);
 
             $response = $request->send();
             $body = $response->getBody();
-
-            return ($response->success() == true && $body == '') ? true : false;
+            
+            return ($response->success() == true && $body->result !== 'deny') ? true : false;
         }
     }
 }
