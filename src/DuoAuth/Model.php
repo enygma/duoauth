@@ -125,7 +125,7 @@ class Model
      */
     public function getRequest($integration = null, $force = true)
     {
-        if ($force == true && $this->request == null) {
+        if ($force == true) {
             $request = $this->getRequestFromIntegration($integration);
             $this->setRequest($request);
             return $this->request;
