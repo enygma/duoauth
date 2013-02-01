@@ -41,7 +41,7 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Find the full list of Phones on the account
-     * 
+     *
      * @return array Set of phone objects
      */
     public function findAll()
@@ -51,7 +51,7 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Find a phone by its internal ID
-     * 
+     *
      * @param string $phoneId Internal phone ID
      * @return \DuoAuth\Devices\Phone instance
      */
@@ -62,7 +62,7 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Associate this Phone with the given user
-     * 
+     *
      * @param \DuoAuth\User $user User object
      * @param string $phoneId Phone internal ID [optional]
      * @return boolean Pass/fail on association
@@ -88,7 +88,7 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Create and update the Phone object
-     * 
+     *
      * @return boolean Success/fail of phone update
      */
     public function save()
@@ -111,7 +111,7 @@ class Phone extends \DuoAuth\Model
             'postdelay' => $this->postdelay
         );
 
-        $request = $this->getRequest()
+        $request = $this->getRequest('admin')
             ->setMethod('POST')->setParams($params)->setPath($path);
 
         $response = $request->send();
@@ -127,13 +127,13 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Delete the Phone device record
-     * 
+     *
      * @return boolean Success/fail on delete
      */
     public function delete()
     {
         if ($this->phone_id !== null) {
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('DELETE')
                 ->setParams($params)
                 ->setPath('/admin/v1/phones/'.$this->phone_id);
@@ -149,14 +149,14 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Send activation message to the Phone
-     * 
+     *
      * @return boolean Success/fail on send
      */
     public function smsActivation()
     {
         if ($this->phone_id !== null) {
 
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_activation');
 
@@ -170,14 +170,14 @@ class Phone extends \DuoAuth\Model
 
     /**
      * Send SMS passcodes to the Phone
-     * 
+     *
      * @return boolean Success/fail on send
      */
     public function smsPasscode()
     {
         if ($this->phone_id !== null) {
 
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_passcodes');
 

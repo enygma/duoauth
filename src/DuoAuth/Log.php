@@ -26,7 +26,7 @@ class Log extends \DuoAuth\Model
 
     public function find()
     {
-        $request = $this->getRequest()
+        $request = $this->getRequest('admin')
             ->setPath('/admin/v1/logs/'.$this->type);
 
         $response = $request->send();
@@ -44,7 +44,7 @@ class Log extends \DuoAuth\Model
 
     /**
      * Get a new Request instance
-     * 
+     *
      * @param string $integration Name of integration to use
      * @return null|\DuoAuth\Request
      */

@@ -126,7 +126,7 @@ class User extends \DuoAuth\Model
             $userId = ($this->user_id !== null) ? $this->user_id : $userId;
 
             // we know the user, let's request their phones
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setPath('/admin/v1/users/'.$userId.'/phones');
 
             $response = $request->send();
@@ -152,13 +152,13 @@ class User extends \DuoAuth\Model
     public function associateDevice(\DuoAuth\Device $device)
     {
         if ($device instanceof \DuoAuth\Phone) {
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setParams(array('phone_id' => $device->phone_id))
                 ->setPath('/admin/v1/users/'.$this->user_id.'/phones');
 
         } elseif ($device instanceof \DuoAuth\Token) {
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setParams(array('token_id' => $device->token_id))
                 ->setPath('/admin/v1/users/'.$this->user_id.'/tokens');
@@ -189,7 +189,7 @@ class User extends \DuoAuth\Model
             'status' => 'active'
         );
 
-        $request = $this->getRequest()
+        $request = $this->getRequest('admin')
             ->setMethod('POST')
             ->setParams($params)
             ->setPath($path);
@@ -213,7 +213,7 @@ class User extends \DuoAuth\Model
     public function delete()
     {
         if ($this->user_id !== null) {
-            $request = $this->getRequest()
+            $request = $this->getRequest('admin')
                 ->setMethod('DELETE')
                 ->setPath('/admin/v1/users/'.$this->user_id);
 
@@ -229,7 +229,7 @@ class User extends \DuoAuth\Model
     /**
      * Send a push login request to the user's device
      *     NOTE: Request waits for user to approve to finish (or timeout)
-     * 
+     *
      * @param string $device Identifier for user device (default "phone1") [optional]
      * @param string $username Username to send request to [optional]
      * @param array $addlInfo Additional info to send with the push [optional]
@@ -259,7 +259,7 @@ class User extends \DuoAuth\Model
 
             $response = $request->send();
             $body = $response->getBody();
-            
+
             return ($response->success() == true && $body->result !== 'deny') ? true : false;
         }
     }
