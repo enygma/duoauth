@@ -15,7 +15,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $r = new MockResponse();
         $r->setBody(json_encode($data));
         $response->setData($r);
-        
+
         $request = $this->getMock('\DuoAuth\Request', array('send'), array($mockClient));
 
         $request->expects($this->once())
@@ -63,7 +63,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $request = $this->buildMockRequest($results);
         $user->setRequest($request);
 
-        $v = $user->validateCode($code, 'testuser');
+        $v = $user->validateCode($code, 'ccornutt');
         $this->assertTrue($v);
     }
 }
