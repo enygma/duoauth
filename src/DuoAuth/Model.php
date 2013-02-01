@@ -117,39 +117,37 @@ class Model
     }
 
     /**
+     * Reset the current request to null
+     *
+     * @return \DuoAuth\Model instance
+     */
+    public function resetRequest()
+    {
+        $this->request = null;
+        return $this;
+    }
+
+    /**
      * Get a new/existing Request instance
      *
      * @param string $integration Name of integration to use
      * @param boolean $force Force a refresh of the request object
      * @return null|\DuoAuth\Request
      */
-    public function getRequest($integration = null, $force = true)
+    public function getRequest($integration = null)
     {
-        if ($force == true) {
-            $request = $this->getRequestFromIntegration($integration);
-            $this->setRequest($request);
-            return $this->request;
-        } else {
-            return $this->request;
-        }
-    }
+        if ($this->request == null) {
+            // make a new request
+            $request = new \DuoAuth\Request();
 
-    /**
-     * Build a request object from an Integration
-     *
-     * @param string $integration Name of integration
-     * @return
-     */
-    public function getRequestFromIntegration($integration = null)
-    {
-        $integration = ($integration !== null) ? $integration : $this->integration;
-
-        if ($integration !== null) {
             $className = '\\DuoAuth\\Integrations\\'.ucwords($integration);
             $int = new $className();
-            return $int->getRequest();
+            $request = $int->updateRequest($request);
+
+            $this->setRequest($request);
+            return $request;
         } else {
-            return null;
+            return $this->request;
         }
     }
 
@@ -177,7 +175,11 @@ class Model
      */
     public function find($path, $type = null, $params = null)
     {
-        $request = $this->getRequest();
+        // get integration type based on first part of path
+        $urlParts = explode('/', $path);
+        $integrationType = $urlParts[1];
+
+        $request = $this->getRequest($integrationType);
         $request->setPath($path);
 
         if ($params !== null && is_array($params)) {
@@ -192,6 +194,7 @@ class Model
             if (is_array($body)) {
                 if (count($body) == 1) {
                     $this->load($body[0]);
+                    $this->resetRequest();
                     return true;
                 } else {
                     if ($type === null) {
@@ -206,14 +209,17 @@ class Model
                         $u->load($user);
                         $users[$index] = $u;
                     }
+                    $this->resetRequest();
                     return $users;
                 }
             } else {
                 // it's probably a single instance too
                 $this->load($body);
+                $this->resetRequest();
                 return true;
             }
         } else {
+            $this->resetRequest();
             return false;
         }
     }
