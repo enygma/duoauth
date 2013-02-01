@@ -4,14 +4,18 @@ namespace DuoAuth\Integrations;
 
 class Auth extends \DuoAuth\Integration
 {
-    public function getRequest()
+    /**
+     * Update the request with some settings (host, init key, secret key)
+     *
+     * @param \DuoAuth\Request $request Request object
+     * @return \DuoAuth\Request object
+     */
+    public function updateRequest($request)
     {
-        $request = new \DuoAuth\Request();
-
         $request->setHostname($this->getHostname())
             ->setIntKey($this->getIntegration())
             ->setSecretKey($this->getSecret());
 
         return $request;
-    }   
+    }
 }

@@ -83,7 +83,7 @@ class Integration extends \DuoAuth\Model
         $file = getcwd().'/duoauth.json';
         if (is_file($file)) {
             $cfg = json_decode(file_get_contents($file));
-            
+
             if ($cfg !== false) {
                 $type = strtolower(str_replace(__NAMESPACE__.'\\Integrations\\', '', get_class($this)));
                 if (isset($cfg->integrations) && isset($cfg->integrations->$type)) {
@@ -96,6 +96,11 @@ class Integration extends \DuoAuth\Model
                 }
             }
         }
+    }
+
+    public function updateRequest($request)
+    {
+        return $request;
     }
 
     /**
@@ -166,7 +171,7 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Get the full list of integrations
-     * 
+     *
      * @return array List of integration data (set of \DuoAuth\Integration)
      */
     public function findAll()
@@ -177,7 +182,7 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Find an integration by its Integration ID
-     * 
+     *
      * @param string $integrationId Integration ID to find
      * @return \DuoAuth\Integration object
      */
@@ -189,13 +194,13 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Create/update the given Integration
-     * 
+     *
      * @param boolean $reset Send a key reset (integration key)
      * @return boolean Success/fail of request
      */
     public function save($reset = false)
     {
-        $path = ($this->integration_key == null) 
+        $path = ($this->integration_key == null)
             ? '/admin/v1/integrations' : '/admin/v1/integrations/'.$this->integration_key;
 
         $params = array(
@@ -216,7 +221,7 @@ class Integration extends \DuoAuth\Model
         if ($reset == true) {
             $params['reset_secret_key'] = 1;
         }
-     
+
         $request = $this->getRequest()
             ->setMethod('POST')
             ->setParams($params)
