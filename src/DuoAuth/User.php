@@ -26,6 +26,9 @@ class User extends \DuoAuth\Model
         ),
         'tokens' => array(
             'type' => 'array'
+        ),
+        'last_pin_sent' => array(
+            'type' => 'string'
         )
     );
 
@@ -262,5 +265,79 @@ class User extends \DuoAuth\Model
 
             return ($response->success() == true && $body->result !== 'deny') ? true : false;
         }
+    }
+
+    /**
+     * Send a verification message to a phone number
+     *     NOTE: Sending uses a Telephony credit on your account
+     *
+     * @param string $type of Verification connection
+     * @param string $phoneNumber Phone number to send message
+     * @param string $message Message to send [optional]
+     * @param array $addlInfo Additional settings to pass to the API call
+     * @return boolean|string False if failure, Body contents on success
+     */
+    public function sendVerification($type, $phoneNumber, $message = null, $addlInfo = null)
+    {
+        if ($message == null) {
+            $message = 'Your valid PIN is <pin>';
+        }
+        $params = array(
+            'phone' => $phoneNumber,
+            'message' => $message
+        );
+        if ($addlInfo !== null && is_array($addlInfo)) {
+            $params = array_merge($params, $addlInfo);
+        }
+
+        $request = $this->getRequest('verify')
+            ->setPath('/verify/v1/'.strtolower($type))
+            ->setMethod('POST')
+            ->setParams($params);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true) ? $body : false;
+    }
+
+    /**
+     * Send a verification call to the phone number given
+     *     When call is made, user object is updated with the PIN sent/generated in last_pin_sent
+     *
+     * @param string $phoneNumber Phone number to call
+     * @param string $message Message to send/say [optional]
+     * @param array $addlInfo Additional settings to send to the API
+     * @return boolean False on failure, true on success
+     */
+    public function sendCall($phoneNumber, $message = null, $addlInfo = null)
+    {
+        $result = $this->sendVerification('call', $phoneNumber, $message, $addlInfo);
+        if ($result == false) {
+            return false;
+        }
+
+        $this->last_pin_sent = $result->pin;
+        return true;
+    }
+
+    /**
+     * Send a verification SMS to the phone number given
+     *     When SMS is sent, user object is updated with the PIN sent/generated in last_pin_sent
+     *
+     * @param string $phoneNumber Phone number to call
+     * @param string $message Message to send/say [optional]
+     * @param array $addlInfo Additional settings to send to the API
+     * @return boolean False on failure, true on success
+     */
+    public function sendSms($phoneNumber, $message = null, $addlInfo = null)
+    {
+        $result = $this->sendVerification('sms', $phoneNumber, $message, $addlInfo);
+        if ($result == false) {
+            return false;
+        }
+
+        $this->last_pin_sent = $result->pin;
+        return true;
     }
 }
