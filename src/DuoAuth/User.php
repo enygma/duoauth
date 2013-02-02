@@ -238,7 +238,7 @@ class User extends \DuoAuth\Model
      * @param array $addlInfo Additional info to send with the push [optional]
      * @return boolean Success/fail of request
      */
-    public function sendPush($device = 'phone1', $username = null, $addlInfo = null)
+    public function sendPush($username = null, $device = 'phone1', $addlInfo = null)
     {
         if ($this->username == null && $username == null) {
             return false;
