@@ -7,13 +7,14 @@ class Auth2 extends \DuoAuth\Integration
     protected $alias = 'auth';
 
     /**
-     * Update the request with some settings (host, init key, secret key)
-     *
-     * @param \DuoAuth\Request $request Request object
+     * Get a new request & update with some settings (host, init key, secret key)
+     * 
      * @return \DuoAuth\Request object
      */
-    public function updateRequest($request)
+    public function getRequest()
     {
+        $request = new \DuoAuth\Request();
+
         $request->setHostname($this->getHostname())
             ->setIntKey($this->getIntegration())
             ->setSecretKey($this->getSecret());
