@@ -70,6 +70,12 @@ class Integration extends \DuoAuth\Model
      */
     protected $apiHostname = null;
 
+    /**
+     * Current HTTP client object
+     * @var object
+     */
+    protected $client = null;
+
     public function __construct($config = null)
     {
         // configure the object
@@ -100,9 +106,35 @@ class Integration extends \DuoAuth\Model
         }
     }
 
+    /**
+     * Default update method
+     * @deprecated
+     */
     public function updateRequest($request)
     {
         return $request;
+    }
+
+    /**
+     * Get the client for the Integration
+     * 
+     * @return object Client object
+     */
+    public function getClient()
+    {
+        $client = new \Guzzle\Http\Client();
+        $this->setClient($client);
+        return $client;
+    }
+
+    /**
+     * Set the client for the Integration
+     * 
+     * @param object $client Client object
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
     }
 
     /**

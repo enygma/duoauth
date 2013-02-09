@@ -11,7 +11,7 @@ class Auth extends \DuoAuth\Integration
      */
     public function getRequest()
     {
-        $request = new \DuoAuth\Request();
+        $request = new \DuoAuth\Request($this->getClient());
 
         $request->setHostname($this->getHostname())
             ->setIntKey($this->getIntegration())
