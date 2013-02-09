@@ -63,10 +63,6 @@ class Request
      */
     public function __construct($client = null)
     {
-        if ($client == null) {
-            // make the Guzzle client
-            $client = new \Guzzle\Http\Client();
-        }
         $this->setClient($client);
     }
 
