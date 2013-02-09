@@ -340,4 +340,32 @@ class User extends \DuoAuth\Model
         $this->last_pin_sent = $result->pin;
         return true;
     }
+
+    /**
+     * Enroll a user in your account by username
+     * 
+     * @param string $username Username to add
+     * @param integer $valid Number of seconds for the generated code to be valid
+     * @return boolean|array False if fails, array with user data otherwise
+     */
+    public function enroll($username = null, $valid = null)
+    {
+        $params = array();
+        if ($valid !== null && is_int($valid)) {
+            $params['valid_secs'] = $valid;
+        }
+        if ($username !== null) {
+            $params['username'] = $username;
+        }
+
+        $request = $this->getRequest('auth')
+            ->setPath('/auth/v2/enroll')
+            ->setMethod('POST')
+            ->setParams($params);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true) ? $body : false;
+    }
 }
