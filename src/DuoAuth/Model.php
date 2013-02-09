@@ -136,12 +136,18 @@ class Model
      */
     public function getRequest($integration = null)
     {
-        // make a new request
-        $request = new \DuoAuth\Request();
+        if ($integration == null) {
+            if ($this->getIntegration() == null) {
+                throw new \InvalidArgumentException('Integration value not allowed to be null');
+            }
+            $integration = $this->getIntegration();
+        } else {
+            $this->setIntegration($integration);
+        }
 
         $className = '\\DuoAuth\\Integrations\\'.ucwords($integration);
         $int = new $className();
-        $request = $int->updateRequest($request);
+        $request = $int->getRequest();
 
         $this->setRequest($request);
         return $request;
@@ -160,6 +166,28 @@ class Model
     }
 
     /**
+     * Get current integration name
+     * 
+     * @return string Integration name
+     */
+    public function getIntegration()
+    {
+        return $this->integration;
+    }
+
+    /**
+     * Set the current integration name
+     * 
+     * @param sring $integration Integration name
+     * @return \DuoAuth\Model instance
+     */
+    public function setIntegration($integration)
+    {
+        $this->integration = $integration;
+        return $this;
+    }
+
+    /**
      * Find records based on the given path and parameters
      *     NOTE: If "type" is not given, it detects the current class and
      *     assumes you want a set of those
@@ -171,11 +199,7 @@ class Model
      */
     public function find($path, $type = null, $params = null)
     {
-        // get integration type based on first part of path
-        $urlParts = explode('/', $path);
-        $integrationType = $urlParts[1];
-
-        $request = $this->getRequest($integrationType);
+        $request = $this->getRequest();
         $request->setPath($path);
 
         if ($params !== null && is_array($params)) {
