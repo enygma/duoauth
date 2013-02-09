@@ -165,6 +165,7 @@ class Request
             return $response;
 
         } catch (\Exception $e) {
+            \DuoAuth\Error::add($e->getMessage());
             $this->errors[] = $e->getMessage();
             return $response;
         }
