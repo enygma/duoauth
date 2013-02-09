@@ -136,19 +136,15 @@ class Model
      */
     public function getRequest($integration = null)
     {
-        if ($this->request == null) {
-            // make a new request
-            $request = new \DuoAuth\Request();
+        // make a new request
+        $request = new \DuoAuth\Request();
 
-            $className = '\\DuoAuth\\Integrations\\'.ucwords($integration);
-            $int = new $className();
-            $request = $int->updateRequest($request);
+        $className = '\\DuoAuth\\Integrations\\'.ucwords($integration);
+        $int = new $className();
+        $request = $int->updateRequest($request);
 
-            $this->setRequest($request);
-            return $request;
-        } else {
-            return $this->request;
-        }
+        $this->setRequest($request);
+        return $request;
     }
 
     /**
