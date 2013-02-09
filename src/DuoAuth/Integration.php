@@ -86,6 +86,8 @@ class Integration extends \DuoAuth\Model
 
             if ($cfg !== false) {
                 $type = strtolower(str_replace(__NAMESPACE__.'\\Integrations\\', '', get_class($this)));
+                $type = ($this->getAlias() !== null) ? $this->getAlias() : $type;
+
                 if (isset($cfg->integrations) && isset($cfg->integrations->$type)) {
                     foreach(get_object_vars($cfg->integrations->$type) as $index => $value) {
                         $method = 'set'.ucwords(strtolower($index));
@@ -167,6 +169,16 @@ class Integration extends \DuoAuth\Model
     public function getHostname()
     {
         return $this->apiHostname;
+    }
+
+    /**
+     * Get the alias of the integration
+     * 
+     * @return string Alias name
+     */
+    public function getAlias()
+    {
+        return $this->alias;
     }
 
     /**
