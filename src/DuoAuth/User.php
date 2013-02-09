@@ -368,4 +368,30 @@ class User extends \DuoAuth\Model
 
         return ($response->success() == true) ? $body : false;
     }
+
+    /**
+     * Get the enrollment status for a user
+     *     Returns either "success", "waiting" or "invalid"
+     * 
+     * @param string $userId User ID returned from "enroll" call (not username)
+     * @param string $activationCode Activation code returned from enroll (with "duo://")
+     * @return string|boolean False if request failed, return string otherwise
+     */
+    public function getEnrollStatus($userId, $activationCode)
+    {
+        $params = array(
+            'user_id' => $userId,
+            'activation_code' => $activationCode
+        );
+
+        $request = $this->getRequest('auth')
+            ->setPath('/auth/v2/enroll_status')
+            ->setMethod('POST')
+            ->setParams($params);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true) ? $body : false;
+    }
 }
