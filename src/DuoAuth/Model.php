@@ -167,7 +167,7 @@ class Model
 
     /**
      * Get current integration name
-     * 
+     *
      * @return string Integration name
      */
     public function getIntegration()
@@ -177,7 +177,7 @@ class Model
 
     /**
      * Set the current integration name
-     * 
+     *
      * @param sring $integration Integration name
      * @return \DuoAuth\Model instance
      */
