@@ -117,7 +117,7 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Get the client for the Integration
-     * 
+     *
      * @return object Client object
      */
     public function getClient()
@@ -129,7 +129,7 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Set the client for the Integration
-     * 
+     *
      * @param object $client Client object
      */
     public function setClient($client)
@@ -205,7 +205,7 @@ class Integration extends \DuoAuth\Model
 
     /**
      * Get the alias of the integration
-     * 
+     *
      * @return string Alias name
      */
     public function getAlias()
