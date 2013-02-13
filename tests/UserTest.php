@@ -25,12 +25,24 @@ class UserTest extends \PHPUnit_Framework_TestCase
         return $request;
     }
 
+    private function buildMockUser($request)
+    {
+        $user = $this->getMock('\DuoAuth\User', array('getRequest'));
+
+        $user->expects($this->once())
+            ->method('getRequest')
+            ->will($this->returnValue($request));
+
+        return $user;
+    }
+
     /**
      * Test that the "find all" returns results and that they're the right type
      * @covers \DuoAuth\User::findAll
      */
     public function testFindAllValidResults()
     {
+
         $user = new \DuoAuth\User();
         $results = array(
             "response" => array(
@@ -39,7 +51,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             )
         );
         $request = $this->buildMockRequest($results);
-        $user->setRequest($request);
+        $user = $this->buildMockUser($request);
 
         $result = $user->findAll();
         $this->assertEquals(2, count($result));
@@ -58,10 +70,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $code = 'testing1234';
         $results = array('response' => array('result' => 'allow'));
-        $user = new \DuoAuth\User();
 
         $request = $this->buildMockRequest($results);
-        $user->setRequest($request);
+        $user = $this->buildMockUser($request);
 
         $v = $user->validateCode($code, 'ccornutt');
         $this->assertTrue($v);
