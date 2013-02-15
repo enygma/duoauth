@@ -99,6 +99,21 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $user = new \DuoAuth\User();
         $user->generateBypassCodes('testuser1', '10');
     }
+
+    /**
+     * If phones are already set, return them right away
+     * @covers \DuoAuth\User::getphones
+     */
+    public function testGetSetPhones()
+    {
+        $phones = array(
+            array('name' => 'Phone #1')
+        );
+        $user = new \DuoAuth\User();
+        $user->phones = $phones;
+
+        $this->assertEquals($phones, $user->getPhones());
+    }
 }
 
 ?>
