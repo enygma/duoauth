@@ -77,6 +77,28 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $v = $user->validateCode($code, 'ccornutt');
         $this->assertTrue($v);
     }
+
+    /**
+     * Try to request too many auth codes (max 10)
+     * @covers \DuoAuth\User::generateBypassCodes
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGenerateCodesTooMany()
+    {
+        $user = new \DuoAuth\User();
+        $user->generateBypassCodes('testuser1', 20);
+    }
+
+    /**
+     * Try to request too many auth codes (max 10)
+     * @covers \DuoAuth\User::generateBypassCodes
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGenerateCodesNaN()
+    {
+        $user = new \DuoAuth\User();
+        $user->generateBypassCodes('testuser1', '10');
+    }
 }
 
 ?>
