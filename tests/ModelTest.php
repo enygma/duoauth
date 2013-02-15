@@ -25,6 +25,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test the load of valid data
+     * @covers \DuoAuth\Model::load
      */
     public function testLoadValidData()
     {
@@ -35,14 +36,23 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             ),
             'test2' => array(
                 'type' => 'string'
+            ),
+            'test3' => array(
+                'type' => 'array',
+                'map' => '\DuoAuth\User'
             )
         ));
         $data = array(
             'test1' => 'foo',
-            'test2' => 'bar'
+            'test2' => 'bar',
+            'test3' => array(array('username' => 'testuser1'))
         );
         $model->load($data);
-        $this->assertEquals($model->toArray(), $data);
+        $result = $model->toArray();
+
+        $this->assertEquals($result['test1'], 'foo');
+        $this->assertEquals($result['test2'], 'bar');
+        $this->assertEquals($result['test3'][0]->username, 'testuser1');
     }
 
     /**
