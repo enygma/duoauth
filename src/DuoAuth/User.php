@@ -121,12 +121,16 @@ class User extends \DuoAuth\Model
     public function getPhones($userId = null)
     {
         // if we already have them, return them
-        if (!empty($this->phones)) {
+        if (count($this->phones) > 0) {
             return $this->phones;
 
         } else {
             $phones = array();
-            $userId = ($this->user_id !== null) ? $this->user_id : $userId;
+            $userId = ($userId !== null) ? $userId : $this->user_id;
+
+            if ($userId == null) {
+                throw new \InvalidArgumentException('Invalid user ID!');
+            }
 
             // we know the user, let's request their phones
             $request = $this->getRequest('admin')
@@ -165,6 +169,8 @@ class User extends \DuoAuth\Model
                 ->setMethod('POST')
                 ->setParams(array('token_id' => $device->token_id))
                 ->setPath('/admin/v1/users/'.$this->user_id.'/tokens');
+        } else {
+            throw new \InvalidArgumentException('Provided device not recognized!');
         }
 
         $response = $request->send();
