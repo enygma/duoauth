@@ -14,6 +14,7 @@ class Service extends \DuoAuth\Model
     {
         $request = $this->getRequest('auth')
             ->setPath('/auth/v2/ping');
+
         $response = $request->send();
 
         if ($response->success()) {
@@ -21,6 +22,24 @@ class Service extends \DuoAuth\Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * Checks to ensure that the keys are correct and request is valid
+     *     Useful for validating secret/integration keys
+     * 
+     * @return boolean Success/fail of request
+     */
+    public function check()
+    {
+        $request = $this->getRequest('auth')
+            ->setPath('/auth/v2/ping')
+            ->setParams(array(
+                ''
+            ));
+
+        $response = $request->send();
+        return ($response->success()) ? true : false;
     }
 
 }
