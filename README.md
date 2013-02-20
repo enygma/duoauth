@@ -31,7 +31,7 @@ Include in your `composer.json` file:
 ```
 {
     "require": {
-        "enygma/duoauth": "dev-master"
+        "enygma/duoauth": "1.*"
     }
 }
 ```
