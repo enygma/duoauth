@@ -3,7 +3,7 @@ duoauth
 
 [![Build Status](https://secure.travis-ci.org/enygma/duoauth.png?branch=master)](http://travis-ci.org/enygma/duoauth)
 
-PHP Library for easy integration with Duo Security's Two-Factor REST API
+PHP Library for easy integration with [Duo Security](http://duosecurity.com)'s Two-Factor REST API
 
 The Duo Security service provides easy integration with your current authentication methods
 to drop in two-factor authentication (cell phone or other device).
@@ -31,7 +31,7 @@ Include in your `composer.json` file:
 ```
 {
     "require": {
-        "enygma/duoauth": "dev-master"
+        "enygma/duoauth": "1.*"
     }
 }
 ```
