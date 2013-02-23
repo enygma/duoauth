@@ -47,6 +47,17 @@ class Error
     {
         return (isset(self::$errors[$key])) ? self::$errors[$key] : self::$errors;
     }
+
+    /**
+     * Clear out the current error list
+     * 
+     * @return boolean True on clear
+     */
+    public static function clear()
+    {
+        self::$errors = array();
+        return true;
+    }
 }
 
 ?>
