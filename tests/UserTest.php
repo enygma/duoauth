@@ -90,6 +90,27 @@ class UserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test a correct response to the successful code request
+     * @covers \DuoAuth\User::generateBypassCodes
+     */
+    public function testGenerateCodesSuccess()
+    {
+        $codeList = array(
+            '12345','67890',
+            '09876','54321'
+        );
+        $results = array('response' => 
+            array('codes' => $codeList)
+        );
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $return = $user->generateBypassCodes('testuser1');
+        $this->assertEquals($codeList, $return->codes);
+    }
+
+    /**
      * Try to request too many auth codes (max 10)
      * @covers \DuoAuth\User::generateBypassCodes
      * @expectedException \InvalidArgumentException
@@ -98,6 +119,37 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $user = new \DuoAuth\User();
         $user->generateBypassCodes('testuser1', '10');
+    }
+
+    /**
+     * Test the response for a successful enrollment status
+     * @covers \DuoAuth\User::getEnrollStatus
+     */
+    public function testGetEnrollStatusValid()
+    {
+        $userId = 1234;
+        $activationCode = 'testcode1';
+        $results = array('response' => 'success');
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $status = $user->getEnrollStatus($userId, $activationCode);
+        $this->assertEquals('success', $status);
+    }
+
+    public function testEnrollValidUser()
+    {
+        $username = 'testuser';
+        $results = array('response' => array(
+            'username' => $username
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $return = $status = $user->enroll($username);
+        $this->assertEquals($return->username, $username);
     }
 
     /**
