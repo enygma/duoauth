@@ -182,13 +182,13 @@ class User extends \DuoAuth\Model
      */
     public function associateDevice(\DuoAuth\Device $device)
     {
-        if ($device instanceof \DuoAuth\Phone) {
+        if ($device instanceof \DuoAuth\Devices\Phone) {
             $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setParams(array('phone_id' => $device->phone_id))
                 ->setPath('/admin/v1/users/'.$this->user_id.'/phones');
 
-        } elseif ($device instanceof \DuoAuth\Token) {
+        } elseif ($device instanceof \DuoAuth\Devices\Token) {
             $request = $this->getRequest('admin')
                 ->setMethod('POST')
                 ->setParams(array('token_id' => $device->token_id))
