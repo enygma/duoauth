@@ -30,6 +30,27 @@ class Response
     }
 
     /**
+     * Get the current "success" status
+     * @return boolean Success status
+     */
+    public function getSuccess()
+    {
+        return $this->success;
+    }
+
+    /**
+     * Set the success status
+     * @param boolean $status Success status
+     */
+    public function setSuccess($status)
+    {
+        if (!is_bool($status)) {
+            throw new \InvalidArgumentException('Success status must be boolean');
+        }
+        $this->success = $status;
+    }
+
+    /**
      * Populate the object with data from the response
      *
      * @param object $response Guzzle response object
@@ -37,7 +58,7 @@ class Response
     public function setData($response)
     {
         if ($response->getStatusCode() == '200') {
-            $this->success = true;
+            $this->setSuccess(true);
         }
 
         $body = json_decode($response->getBody(true));
@@ -51,7 +72,7 @@ class Response
      */
     public function success()
     {
-        return ($this->success == true) ? true : false;
+        return ($this->getSuccess() == true) ? true : false;
     }
 
     /**
