@@ -183,19 +183,18 @@ class User extends \DuoAuth\Model
     public function associateDevice(\DuoAuth\Device $device)
     {
         if ($device instanceof \DuoAuth\Devices\Phone) {
-            $request = $this->getRequest('admin')
-                ->setMethod('POST')
-                ->setParams(array('phone_id' => $device->phone_id))
-                ->setPath('/admin/v1/users/'.$this->user_id.'/phones');
-
+            $type = 'phones';
+            $deviceId = $device->phone_id;
         } elseif ($device instanceof \DuoAuth\Devices\Token) {
-            $request = $this->getRequest('admin')
-                ->setMethod('POST')
-                ->setParams(array('token_id' => $device->token_id))
-                ->setPath('/admin/v1/users/'.$this->user_id.'/tokens');
+            $type = 'tokens';
+            $deviceId = $device->token_id;
         } else {
             throw new \InvalidArgumentException('Provided device not recognized!');
         }
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')
+            ->setParams(array('token_id' => $deviceId))
+            ->setPath('/admin/v1/users/'.$this->user_id.'/'.$type);
 
         $response = $request->send();
         if ($response->success() == true) {
