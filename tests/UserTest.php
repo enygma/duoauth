@@ -236,6 +236,58 @@ class UserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that a send push returns correctly for an "allow"
+     * @covers \DuoAuth\User::sendPush
+     */
+    public function testSendPushValid()
+    {
+        $results = array('response' => array(
+            'result' => 'allow'
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $status = $user->sendPush('testuser1');
+        $this->assertTrue($status);
+    }
+
+    /**
+     * Test the response of a successful delete
+     * @covers \DuoAuth\User::delete
+     */
+    public function testDeleteSuccess()
+    {
+        $username = 'testuser2';
+        $results = array('response' => '');
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+        $user->user_id = '12345';
+
+        $status = $user->delete();
+        $this->assertTrue($status);
+    }
+
+    /**
+     * Test that save works and populates the user correctly
+     * @covers \DuoAuth\User::save
+     */
+    public function testSaveSuccess()
+    {
+        $username = 'testuser2';
+        $results = array('response' => array(
+            'username' => $username
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $status = $user->save();
+        $this->assertEquals($user->username, $username);
+    }
+
+    /**
      * If phones are already set, return them right away
      * @covers \DuoAuth\User::getPhones
      */
