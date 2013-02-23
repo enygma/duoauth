@@ -410,7 +410,7 @@ class User extends \DuoAuth\Model
      * @param integer $validSec Seconds for the codes to be valid for [optional]
      * @return string|boolean Set of codes or false on failure
      */
-    public function generateBypassCodes($username, $numCodes = null, $validSec = 0)
+    public function generateBypassCodes($username, $numCodes = 10, $validSec = 0)
     {
         $params = array(
             'username' => $username,
