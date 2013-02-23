@@ -25,13 +25,17 @@ class UserTest extends \PHPUnit_Framework_TestCase
         return $request;
     }
 
-    private function buildMockUser($request)
+    private function buildMockUser($request, $properies = array())
     {
         $user = $this->getMock('\DuoAuth\User', array('getRequest'));
 
         $user->expects($this->once())
             ->method('getRequest')
             ->will($this->returnValue($request));
+
+        foreach ($properies as $propertyName => $propertyValue) {
+            $user->$propertyName = $propertyValue;
+        }
 
         return $user;
     }
@@ -138,6 +142,10 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('success', $status);
     }
 
+    /**
+     * Test the response when a user is validly enrolled
+     * @covers \DuoAuth\User::enroll
+     */
     public function testEnrollValidUser()
     {
         $username = 'testuser';
@@ -153,8 +161,83 @@ class UserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the call to enroll with # of seconds for it to be valid
+     * @covers \DuoAuth\User::enroll
+     */
+    public function testEnrollSecondsValid()
+    {
+        $username = 'testuser';
+        $results = array('response' => array(
+            'username' => $username
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $return = $status = $user->enroll($username, 20);
+        $this->assertEquals($return->username, $username);
+    }
+
+    /**
+     * Test that the sending of an SMS returns the code
+     * @covers \DuoAuth\User::sendSms
+     * @covers \DuoAuth\User::getLastPin
+     */
+    public function testSendSmsValid()
+    {
+        $pin = '12345';
+        $results = array('response' => array(
+            'pin' => $pin
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $status = $user->sendSms('2145551234');
+        $this->assertEquals($user->getLastPin(), $pin);
+    }
+
+    /**
+     * Test that the sending of a verification returns a PIN
+     * @covers \DuoAuth\User::sendVerification
+     * @covers \DuoAuth\User::getLastPin
+     */
+    public function testSendVerificationValid()
+    {
+        $pin = '12345';
+        $results = array('response' => array(
+            'pin' => $pin
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $return = $user->sendVerification('call','2145551234');
+        $this->assertEquals($return->pin, $pin);
+    }    
+
+    /**
+     * Test that the sending of an SMS returns the code
+     * @covers \DuoAuth\User::sendCall
+     * @covers \DuoAuth\User::getLastPin
+     */
+    public function testSendPhoneValid()
+    {
+        $pin = '12345';
+        $results = array('response' => array(
+            'pin' => $pin
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $status = $user->sendCall('2145551234');
+        $this->assertEquals($user->getLastPin(), $pin);
+    }
+
+    /**
      * If phones are already set, return them right away
-     * @covers \DuoAuth\User::getphones
+     * @covers \DuoAuth\User::getPhones
      */
     public function testGetSetPhones()
     {
@@ -165,6 +248,79 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $user->phones = $phones;
 
         $this->assertEquals($phones, $user->getPhones());
+    }
+
+    /**
+     * Test that the phone response is translated into objects correctly
+     * @covers \DuoAuth\User::getPhones
+     */
+    public function testGetPhonesList()
+    {
+        $results = array('response' => array(
+            array('number' => '2145551234'),
+            array('number' => '9725551234')
+        ));
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $phones = $user->getPhones('1234');
+        
+        $this->assertTrue($phones[0] instanceof \DuoAuth\Devices\Phone);
+        $this->assertEquals($phones[1]->number, '9725551234');
+    }
+
+    /**
+     * Test that a device correctly associated with a user
+     * @covers \DuoAuth\User::associateDevice
+     */
+    public function testAssociateDevice()
+    {
+        $phone1 = new \DuoAuth\Devices\Phone();
+        $phone1->number = '2145551234';
+
+        $results = array('response' => '');
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request, array('id' => '1234'));
+
+        $result = $user->associateDevice($phone1);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test that a valid response is returned from a preauth request
+     * @covers \DuoAuth\User::preauth
+     */
+    public function testPreauthValid()
+    {
+        $response =  (object)array(
+            'result' => 'auth',
+            'factors' => (object)array(
+                'default' => 'phone1'
+            )
+        );
+        $results = array('response' => $response);
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request);
+
+        $result = $user->preauth('testuser1');
+        $this->assertEquals($result, $response);
+    }
+
+    /**
+     * Test the getter/setter for the last pin returned
+     * @covers \DuoAuth\User::setLastPin
+     * @covers \DuoAuth\User::getLastPin
+     */
+    public function testGetSetLastPin()
+    {
+        $pin = '1234';
+        $user = new \DuoAuth\User();
+        $user->setLastPin($pin);
+
+        $this->assertEquals($pin, $user->getLastPin());
     }
 }
 
