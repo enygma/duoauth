@@ -207,6 +207,37 @@ class User extends \DuoAuth\Model
     }
 
     /**
+     * Unassociate device from user
+     * 
+     * @param  \DuoAuth\Device $device Device to unassociate
+     * @return boolean Pass/fail on unassociation
+     */
+    public function unassociateDevice(\DuoAuth\Device $device)
+    {
+        if ($device instanceof \DuoAuth\Devices\Phone) {
+            $type = 'phones';
+            $deviceId = $device->phone_id;
+        } elseif ($device instanceof \DuoAuth\Devices\Phone) {
+            $type = 'tokens';
+            $deviceId = $device->token_id;
+        } else {
+            throw new \InvalidArgumentException('Provided device not recognized!');
+        }
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')
+            ->setParams(array('token_id' => $deviceId))
+            ->setPath('/admin/v1/users/'.$this->user_id.'/'.$type);
+
+        $response = $request->send();
+        if ($response->success() == true) {
+            $body = $response->getBody();
+            return (empty($body)) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Save the current user (supports new user creation)
      *
      * @return boolean Pass/fail of save
