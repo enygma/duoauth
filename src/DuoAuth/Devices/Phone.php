@@ -2,7 +2,7 @@
 
 namespace DuoAuth\Devices;
 
-class Phone extends \DuoAuth\Model
+class Phone extends \DuoAuth\Device
 {
     protected $properties = array(
         'activated' => array(
