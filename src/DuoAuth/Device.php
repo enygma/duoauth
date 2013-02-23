@@ -2,7 +2,7 @@
 
 namespace DuoAuth;
 
-class Device
+class Device extends \DuoAuth\Model
 {
     
 }
