@@ -35,6 +35,12 @@ class User extends \DuoAuth\Model
     protected $integration = 'admin';
 
     /**
+     * Last PIN returned from send* commands
+     * @var string
+     */
+    protected $last_pin_sent = null;
+
+    /**
      * Find a single user by username
      *
      * @param string $username Username to search for
@@ -53,6 +59,24 @@ class User extends \DuoAuth\Model
     public function findAll()
     {
         return $this->find('/admin/v1/users');
+    }
+
+    /**
+     * Get the last PIN returned
+     * @return string PIN number
+     */
+    public function getLastPin()
+    {
+        return $this->last_pin_sent;
+    }
+
+    /**
+     * Set the PIN from the response
+     * @param string $pin PIN number
+     */
+    public function setLastPin($pin)
+    {
+        $this->last_pin_sent = $pin;
     }
 
     /**
@@ -323,7 +347,7 @@ class User extends \DuoAuth\Model
             return false;
         }
 
-        $this->last_pin_sent = $result->pin;
+        $this->setLastPin($result->pin);
         return true;
     }
 
@@ -343,7 +367,7 @@ class User extends \DuoAuth\Model
             return false;
         }
 
-        $this->last_pin_sent = $result->pin;
+        $this->setLastPin($result->pin);
         return true;
     }
 
