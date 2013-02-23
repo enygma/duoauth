@@ -341,6 +341,24 @@ class UserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that a device correctly associated with a user
+     * @covers \DuoAuth\User::unassociateDevice
+     */
+    public function testUnassociateDevice()
+    {
+        $phone1 = new \DuoAuth\Devices\Phone();
+        $phone1->number = '2145551234';
+
+        $results = array('response' => '');
+
+        $request = $this->buildMockRequest($results);
+        $user = $this->buildMockUser($request, array('id' => '1234'));
+
+        $result = $user->unassociateDevice($phone1);
+        $this->assertTrue($result);
+    }
+
+    /**
      * Test that a valid response is returned from a preauth request
      * @covers \DuoAuth\User::preauth
      */
