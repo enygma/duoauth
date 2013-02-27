@@ -275,8 +275,7 @@ class Integration extends \DuoAuth\Model
 
         if ($response !== null && $response->success() == true) {
             $body = $response->getBody();
-            $this->load($body);
-            return (empty($body)) ? true : false;
+            return $this->load($body);
         } else {
             return false;
         }
