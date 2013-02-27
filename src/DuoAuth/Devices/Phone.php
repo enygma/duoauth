@@ -99,11 +99,11 @@ class Phone extends \DuoAuth\Device
     public function save()
     {
         $path = ($this->phone_id == null)
-            ? '/admin/v1/phones' : '/admin/v1/phones';
+            ? '/admin/v1/phones' : '/admin/v1/phones/'.$this->phone_id;
 
         // "number" is required
         if ($this->number == null) {
-            return false;
+            throw new \InvalidArgumentException('The "number" property is required');
         }
 
         $params = array(
@@ -123,8 +123,7 @@ class Phone extends \DuoAuth\Device
 
         if ($response->success() == true) {
             $body = $response->getBody();
-            $this->load($body);
-            return (empty($body)) ? true : false;
+            return $this->load($body);
         } else {
             return false;
         }
@@ -180,20 +179,20 @@ class Phone extends \DuoAuth\Device
      *
      * @return boolean Success/fail on send
      */
-    public function smsPasscode()
+    public function smsPasscode($phoneId = null)
     {
-        if ($this->phone_id !== null) {
-
-            $request = $this->getRequest('admin')
-                ->setMethod('POST')
-                ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_passcodes');
-
-            $response = $request->send();
-            $body = $response->getBody();
-
-            return ($response->success() == true && $body == '') ? true : false;
-        } else {
-            return false;
+        $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
+        if ($phoneId == null) {
+            throw new \InvalidArgumentException('Phone ID cannot be null');
         }
+
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')
+            ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_passcodes');
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true && $body == '') ? true : false;
     }
 }
