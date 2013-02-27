@@ -67,6 +67,10 @@ class Model
         if (is_object($data)) {
             $data = get_object_vars($data);
         }
+        if (!is_array($data)) {
+            throw new \InvalidArgumentException('Data to load should be an array');
+        }
+        
         foreach ($data as $index => $value) {
             // see what the type is
             if (array_key_exists($index, $this->properties)) {
