@@ -2,44 +2,10 @@
 
 namespace DuoAuth;
 
-require_once 'MockClient.php';
-require_once 'MockResponse.php';
+require_once 'BaseModelHelper.php';
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends BaseModelHelper
 {
-    private function buildMockRequest($data)
-    {
-        $mockClient = new MockClient();
-        $response = new \DuoAuth\Response();
-
-        $r = new MockResponse();
-        $r->setBody(json_encode($data));
-        $response->setData($r);
-
-        $request = $this->getMock('\DuoAuth\Request', array('send'), array($mockClient));
-
-        $request->expects($this->once())
-            ->method('send')
-            ->will($this->returnValue($response));
-
-        return $request;
-    }
-
-    private function buildMockUser($request, $properies = array())
-    {
-        $user = $this->getMock('\DuoAuth\User', array('getRequest'));
-
-        $user->expects($this->once())
-            ->method('getRequest')
-            ->will($this->returnValue($request));
-
-        foreach ($properies as $propertyName => $propertyValue) {
-            $user->$propertyName = $propertyValue;
-        }
-
-        return $user;
-    }
-
     /**
      * Test that the "find all" returns results and that they're the right type
      * @covers \DuoAuth\User::findAll
@@ -55,7 +21,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             )
         );
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $result = $user->findAll();
         $this->assertEquals(2, count($result));
@@ -76,7 +42,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => array('result' => 'allow'));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $v = $user->validateCode($code, 'ccornutt');
         $this->assertTrue($v);
@@ -108,7 +74,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         );
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $return = $user->generateBypassCodes('testuser1');
         $this->assertEquals($codeList, $return->codes);
@@ -136,7 +102,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => 'success');
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $status = $user->getEnrollStatus($userId, $activationCode);
         $this->assertEquals('success', $status);
@@ -154,7 +120,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $return = $status = $user->enroll($username);
         $this->assertEquals($return->username, $username);
@@ -172,7 +138,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $return = $status = $user->enroll($username, 20);
         $this->assertEquals($return->username, $username);
@@ -191,7 +157,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $status = $user->sendSms('2145551234');
         $this->assertEquals($user->getLastPin(), $pin);
@@ -210,7 +176,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $return = $user->sendVerification('call','2145551234');
         $this->assertEquals($return->pin, $pin);
@@ -229,7 +195,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $status = $user->sendCall('2145551234');
         $this->assertEquals($user->getLastPin(), $pin);
@@ -246,7 +212,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $status = $user->sendPush('testuser1');
         $this->assertTrue($status);
@@ -262,7 +228,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => '');
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
         $user->user_id = '12345';
 
         $status = $user->delete();
@@ -281,7 +247,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $status = $user->save();
         $this->assertEquals($user->username, $username);
@@ -314,7 +280,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         ));
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $phones = $user->getPhones('1234');
         
@@ -334,7 +300,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => '');
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request, array('id' => '1234'));
+        $user = $this->buildMockModel('\DuoAuth\User', $request, array('id' => '1234'));
 
         $result = $user->associateDevice($phone1);
         $this->assertTrue($result);
@@ -352,7 +318,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => '');
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request, array('id' => '1234'));
+        $user = $this->buildMockModel('\DuoAuth\User', $request, array('id' => '1234'));
 
         $result = $user->unassociateDevice($phone1);
         $this->assertTrue($result);
@@ -373,7 +339,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $results = array('response' => $response);
 
         $request = $this->buildMockRequest($results);
-        $user = $this->buildMockUser($request);
+        $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $result = $user->preauth('testuser1');
         $this->assertEquals($result, $response);
