@@ -70,6 +70,11 @@ class Phone extends \DuoAuth\Device
     public function associate(\DuoAuth\User $user, $phoneId = null)
     {
         $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
+
+        if ($phoneId === null) {
+            throw new \InvalidArgumentException('Invalid phone ID');
+        }
+
         $userId = $user->user_id;
 
         $request = $this->getRequest()
@@ -130,21 +135,23 @@ class Phone extends \DuoAuth\Device
      *
      * @return boolean Success/fail on delete
      */
-    public function delete()
+    public function delete($phoneId = null)
     {
-        if ($this->phone_id !== null) {
-            $request = $this->getRequest('admin')
-                ->setMethod('DELETE')
-                ->setParams($params)
-                ->setPath('/admin/v1/phones/'.$this->phone_id);
-
-            $response = $request->send();
-            $body = $response->getBody();
-
-            return ($response->success() == true && $body == '') ? true : false;
-        } else {
-            return false;
+        $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
+        if ($phoneId === null) {
+            throw new \InvalidArgumentException('Phone ID cannot be null');
         }
+        $params = array('phone_id' => '12345');
+
+        $request = $this->getRequest('admin')
+            ->setMethod('DELETE')
+            ->setParams($params)
+            ->setPath('/admin/v1/phones/'.$phoneId);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true && $body == '') ? true : false;
     }
 
     /**
@@ -152,20 +159,20 @@ class Phone extends \DuoAuth\Device
      *
      * @return boolean Success/fail on send
      */
-    public function smsActivation()
+    public function smsActivation($phoneId = null)
     {
-        if ($this->phone_id !== null) {
-
-            $request = $this->getRequest('admin')
-                ->setMethod('POST')
-                ->setPath('/admin/v1/phones/'.$this->phone_id.'/send_sms_activation');
-
-            $response = $request->send();
-
-            return ($response->success() == true) ? true : false;
-        } else {
-            return false;
+        $phoneId = ($phoneId !== null) ? $phoneId : $this->phone_id;
+        if ($phoneId === null) {
+            throw new \InvalidArgumentException('Phone ID cannot be null');
         }
+
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')
+            ->setPath('/admin/v1/phones/'.$this->phoneId.'/send_sms_activation');
+
+        $response = $request->send();
+
+        return ($response->success() == true) ? true : false;
     }
 
     /**
