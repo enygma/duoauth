@@ -192,7 +192,7 @@ class PhoneTest extends BaseModelHelper
 
     /**
      * Test that the sending of an SMS request is successful
-     * @covers \DuoAuth\Devices\Phone::smsActivation
+     * @covers \DuoAuth\Devices\Phone::smsPasscode
      */
     public function testSendPasscodeSuccess()
     {
@@ -208,7 +208,7 @@ class PhoneTest extends BaseModelHelper
 
     /**
      * Test that a SMS send fails without the "phone ID"
-     * @covers \DuoAuth\Devices\Phone::smsActivation
+     * @covers \DuoAuth\Devices\Phone::smsPasscode
      * @expectedException \InvalidArgumentException
      */
     public function testSendPasscodeFailNoPhoneID()
