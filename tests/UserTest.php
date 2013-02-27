@@ -2,8 +2,6 @@
 
 namespace DuoAuth;
 
-require_once 'BaseModelHelper.php';
-
 class UserTest extends BaseModelHelper
 {
     /**
