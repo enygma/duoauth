@@ -107,15 +107,6 @@ class Integration extends \DuoAuth\Model
     }
 
     /**
-     * Default update method
-     * @deprecated
-     */
-    public function updateRequest($request)
-    {
-        return $request;
-    }
-
-    /**
      * Get the client for the Integration
      *
      * @return object Client object
