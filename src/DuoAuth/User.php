@@ -248,8 +248,10 @@ class User extends \DuoAuth\Model
 
         $params = array(
             'username' => $this->username,
-            'realname' => $this->realname,
         );
+        if ($this->realname !== null) {
+            $params['realname'] = $this->realname;
+        }
         if ($this->status !== null) {
             $params['status'] = $this->status;
         }
