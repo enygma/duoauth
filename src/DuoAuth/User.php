@@ -248,9 +248,13 @@ class User extends \DuoAuth\Model
 
         $params = array(
             'username' => $this->username,
-            'realname' => $this->realname,
-            'status' => 'active'
         );
+        if ($this->realname !== null) {
+            $params['realname'] = $this->realname;
+        }
+        if ($this->status !== null) {
+            $params['status'] = $this->status;
+        }
 
         $request = $this->getRequest('admin')
             ->setMethod('POST')
