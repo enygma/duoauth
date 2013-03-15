@@ -62,7 +62,18 @@ class Response
         }
 
         $body = json_decode($response->getBody(true));
-        $this->setBody($body->response);
+        if (isset($body->response)) {
+            $this->setBody($body->response);
+        } else {
+            $this->setBody($body);
+
+            // check for a "stat" of "FAIL"
+            $body = $this->getBody();
+            if (isset($body->stat) && $body->stat == 'FAIL') {
+                \DuoAuth\Error::add($body->message);
+                $this->setSuccess(false);
+            }
+        }
     }
 
     /**
