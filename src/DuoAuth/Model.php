@@ -23,6 +23,12 @@ class Model
     protected $integration = null;
 
     /**
+     * Override for integration configuration 
+     * @var array
+     */
+    protected $integrationConfig = array();
+
+    /**
      * Current Request object
      * @var \DuoAuth\Request
      */
@@ -53,6 +59,28 @@ class Model
     public function getProperties()
     {
         return $this->properties;
+    }
+
+    /**
+     * Set the configuration (passed to integration)
+     * @param array $config Configuration array
+     */
+    public function setConfig($config)
+    {
+        if (!is_array($config)) {
+            throw new \InvalidArgumentException('Config options must be an array');
+        }
+        $this->integrationConfig = $config;
+        return $this;
+    }
+
+    /**
+     * Get the current configuration (passed to integration)
+     * @return array Config information
+     */
+    public function getConfig()
+    {
+        return $this->integrationConfig;
     }
 
     /**
@@ -150,7 +178,9 @@ class Model
         }
 
         $className = '\\DuoAuth\\Integrations\\'.ucwords($integration);
-        $int = new $className();
+
+        $config = $this->getConfig();
+        $int = (!empty($config)) ? new $className($config) : new $className();
         $request = $int->getRequest();
 
         $this->setRequest($request);
