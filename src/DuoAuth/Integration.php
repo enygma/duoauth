@@ -81,6 +81,13 @@ class Integration extends \DuoAuth\Model
         // configure the object
         if ($config == null) {
             $this->loadConfig();
+        } else {
+            foreach ($config as $index => $value) {
+                $method = 'set'.ucwords(strtolower($index));
+                if (method_exists($this, $method)) {
+                    $this->$method($value);
+                }
+            }
         }
     }
 
