@@ -36,6 +36,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the properties are set correctly based on results
      * @covers \DuoAuth\Model::setProperties
+     * @covers \DuoAuth\Model::getProperties
      */
     public function testSetProperties()
     {
@@ -50,6 +51,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the getter/setter on the configuration handling
+     * @covers \DuoAuth\Model::setConfig
+     * @covers \DuoAuth\Model::getConfig
+     */
+    public function testGetSetConfig()
+    {
+        $config = array('test' => 'setting');
+
+        $this->model->setConfig($config);
+        $this->assertEquals($this->model->getConfig(), $config);
+    }
+
+    /**
+     * Test that an exception is thrown when bad config is given
+     * @covers \DuoAuth\Model::setConfig
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidConfig()
+    {
+        $this->model->setConfig('badconfig');
+    }
+
+    /**
      * Test that the data is populated when given on construct
      * @covers \DuoAuth\Model::__construct
      */
@@ -59,6 +83,17 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $model = new \DuoAuth\MockModel($data);
 
         $this->assertEquals($model->test, 'foo');
+    }
+
+    /**
+     * Test that an exception is thrown when bad data is given to load
+     * @covers \DuoAuth\Model::__construct
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetInvalidData()
+    {
+        $model = new \DuoAuth\MockModel();
+        $model->load('baddata');
     }
 
     /**
