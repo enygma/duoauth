@@ -10,27 +10,38 @@ class BaseModelHelper extends \PHPUnit_Framework_TestCase
 {
     /**
      * Build a mock request with the given data
-     * 
+     *
      * @param array $data Data to set in the response
      * @param \DuoAuth\Response $response Mocked Response object [optional]
+     * @param mixed $methods Moethods to add to the mock object
      * @return mocked Request object
      */
-    protected function buildMockRequest($data, $response = null)
+    protected function buildMockRequest($data, $response = null, $methods = null)
     {
+        $mockMethods = array('send');
+        if (is_array($methods)) {
+            $mockMethods = array_merge($methods, $mockMethods);
+        }
+        if ($methods === false) {
+            $mockMethods = array();
+        }
+
         $mockClient = new MockClient();
         $response = ($response !== null) ? $response : $this->buildMockResponse($data);
-        $request = $this->getMock('\DuoAuth\Request', array('send'), array($mockClient));
+        $request = $this->getMock('\DuoAuth\Request', $mockMethods, array($mockClient));
 
-        $request->expects($this->once())
-            ->method('send')
-            ->will($this->returnValue($response));
+        if (!empty($mockMethods)) {
+            $request->expects($this->once())
+                ->method('send')
+                ->will($this->returnValue($response));
+        }
 
         return $request;
     }
 
     /**
      * Build a mock response object to inject into the response
-     * 
+     *
      * @param  array $data Data to set in the response
      * @return \DuoAuth\Response object
      */
