@@ -140,7 +140,7 @@ class Phone extends \DuoAuth\Device
         if ($phoneId === null) {
             throw new \InvalidArgumentException('Phone ID cannot be null');
         }
-        $params = array('phone_id' => '12345');
+        $params = array('phone_id' => $phoneId);
 
         $request = $this->getRequest('admin')
             ->setMethod('DELETE')
