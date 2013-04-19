@@ -207,7 +207,7 @@ class User extends \DuoAuth\Model
 
     /**
      * Unassociate device from user
-     * 
+     *
      * @param  \DuoAuth\Device $device Device to unassociate
      * @return boolean Pass/fail on unassociation
      */
@@ -297,12 +297,12 @@ class User extends \DuoAuth\Model
      * Send a push login request to the user's device
      *     NOTE: Request waits for user to approve to finish (or timeout)
      *
-     * @param string $device Identifier for user device (default "phone1") [optional]
+     * @param string $deviceId Internal identifier for user device
      * @param string $username Username to send request to [optional]
      * @param array $addlInfo Additional info to send with the push [optional]
      * @return boolean Success/fail of request
      */
-    public function sendPush($username = null, $device = 'phone1', $addlInfo = null)
+    public function sendPush($deviceId, $username = null, $addlInfo = null)
     {
         if ($this->username == null && $username == null) {
             return false;
@@ -310,17 +310,17 @@ class User extends \DuoAuth\Model
             $username = ($username !== null) ? $username : $this->username;
 
             $params = array(
-                'user'   => $this->username,
+                'username'   => $this->username,
                 'factor' => 'push',
-                'phone'  => $device
+                'device'  => $deviceId
             );
 
             if ($addlInfo !== null && is_array($addlInfo)) {
                 $params['pushinfo'] = http_build_query($addlInfo);
             }
 
-            $request = $this->getRequest('auth')
-                ->setPath('/rest/v1/auth')
+            $request = $this->getRequest('auth2')
+                ->setPath('/auth/v2/auth')
                 ->setMethod('POST')
                 ->setParams($params);
 

@@ -67,7 +67,7 @@ class UserTest extends BaseModelHelper
             '12345','67890',
             '09876','54321'
         );
-        $results = array('response' => 
+        $results = array('response' =>
             array('codes' => $codeList)
         );
 
@@ -178,7 +178,7 @@ class UserTest extends BaseModelHelper
 
         $return = $user->sendVerification('call','2145551234');
         $this->assertEquals($return->pin, $pin);
-    }    
+    }
 
     /**
      * Test that the sending of an SMS returns the code
@@ -212,7 +212,7 @@ class UserTest extends BaseModelHelper
         $request = $this->buildMockRequest($results);
         $user = $this->buildMockModel('\DuoAuth\User', $request);
 
-        $status = $user->sendPush('testuser1');
+        $status = $user->sendPush('12345', 'testuser1');
         $this->assertTrue($status);
     }
 
@@ -292,7 +292,7 @@ class UserTest extends BaseModelHelper
         $user = $this->buildMockModel('\DuoAuth\User', $request);
 
         $phones = $user->getPhones('1234');
-        
+
         $this->assertTrue($phones[0] instanceof \DuoAuth\Devices\Phone);
         $this->assertEquals($phones[1]->number, '9725551234');
     }
