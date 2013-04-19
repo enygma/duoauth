@@ -89,4 +89,19 @@ class IntegrationTest extends BaseModelHelper
         $this->assertFalse($result);
         $this->assertEquals($int->greeting, null);
     }
+
+    /**
+     * Test the getter/setter for the integration alias
+     * @covers \DuoAuth\Integration::setAlias
+     * @covers \DuoAuth\Integration::getAlias
+     */
+    public function testGetSetAlias()
+    {
+        $alias = 'testalias';
+        $config = array();
+
+        $int = new \DuoAuth\Integration($config);
+        $int->setAlias($alias);
+        $this->assertEquals($int->getAlias(), $alias);
+    }
 }

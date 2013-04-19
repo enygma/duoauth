@@ -212,6 +212,18 @@ class Integration extends \DuoAuth\Model
     }
 
     /**
+     * Set the alias for the integration
+     * 
+     * @param string $alias Alias
+     * @return \DuoAuth\Auth instance
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
+    /**
      * Get the full list of integrations
      *
      * @return array List of integration data (set of \DuoAuth\Integration)
