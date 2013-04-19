@@ -34,6 +34,9 @@ class Yubikey extends \DuoAuth\Devices\Token
         $path = ($this->token_id == null)
             ? '/admin/v1/tokens' : '/admin/v1/tokens/'.$this->token_id;
 
+        // this is a Yubikey so the type is...
+        $this->type = 'yk';
+
         $required = array(
             'type', 'serial', 'private_id', 'aes_key'
         );
