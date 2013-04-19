@@ -216,7 +216,7 @@ class User extends \DuoAuth\Model
         if ($device instanceof \DuoAuth\Devices\Phone) {
             $type = 'phones';
             $deviceId = $device->phone_id;
-        } elseif ($device instanceof \DuoAuth\Devices\Phone) {
+        } elseif ($device instanceof \DuoAuth\Devices\Token) {
             $type = 'tokens';
             $deviceId = $device->token_id;
         } else {
