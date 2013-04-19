@@ -123,7 +123,7 @@ class Request
      *
      * @return string SHA1 hash for request contents
      */
-    private function buildHashHeader()
+    public function buildHashHeader()
     {
         return hash_hmac(
             'sha1',
@@ -162,7 +162,7 @@ class Request
 
         } catch (\Exception $e) {
             \DuoAuth\Error::add($e->getMessage());
-            $this->errors[] = $e->getMessage();
+            $this->setError($e->getMessage());
             return $response;
         }
 
@@ -198,6 +198,18 @@ class Request
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * Set an error message in the array
+     * 
+     * @param string $msg Error message
+     * @return \DuoAuth\Request instance
+     */
+    public function setError($msg)
+    {
+        $this->errors[] = $msg;
+        return $this;
     }
 
     /**
