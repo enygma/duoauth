@@ -247,6 +247,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test that the client fetched is valid and the right type
+     * @covers \DuoAuth\Request::getClient
      */
     public function testGetClient()
     {
@@ -254,6 +255,37 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
             $client !== null && $client instanceof MockClient
         );
+    }
+
+    /**
+     * Test the getter/setter for error messages
+     * @covers \DuoAuth\Request::setError
+     * @covers \DuoAuth\Request::getErrors
+     */
+    public function testGetSetErrors()
+    {
+        $error = 'test message #1';
+        $this->request->setError($error);
+
+        $this->assertEquals(
+            array($error),
+            $this->request->getErrors()
+        );
+    }
+
+    /**
+     * Test the building of the hash headers for the request
+     * @covers \DuoAuth\Request::buildHashHeader
+     */
+    public function testBuildHashHeader()
+    {
+        $result = $this->request->buildHashHeader();
+        $hash = hash_hmac(
+            'sha1',
+            $this->request->getCanonRequest(),
+            $this->request->getSecretKey()
+        );
+        $this->assertEquals($hash, $result);
     }
 
 }
