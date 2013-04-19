@@ -267,6 +267,17 @@ class UserTest extends BaseModelHelper
     }
 
     /**
+     * Test the throwing of an exception when no user ID is set
+     * @covers \DuoAuth\User::getPhones
+     * @expectedException \InvalidArgumentException
+     */
+    public function testGetPhonesInvalidUser()
+    {
+        $user = new \DuoAuth\User();
+        $user->getPhones();
+    }
+
+    /**
      * Test that the phone response is translated into objects correctly
      * @covers \DuoAuth\User::getPhones
      */
