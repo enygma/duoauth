@@ -44,10 +44,34 @@ class Token extends \DuoAuth\Device
      * Find a token by its internal ID
      *
      * @param string $tokenId Internal token ID
-     * @return \DuoAuth\Devices\Phone instance
+     * @return \DuoAuth\Devices\Token instance
      */
     public function findById($tokenId)
     {
         return $this->find('/admin/v1/tokens/'.$tokenId, '\\DuoAuth\\Devices\\Token');
     }
+
+    /**
+     * Delete the Token device record
+     *
+     * @return boolean Success/fail on delete
+     */
+    public function delete($tokenId = null)
+    {
+        $tokenId = ($tokenId !== null) ? $tokenId : $this->token_id;
+        if ($tokenId === null) {
+            throw new \InvalidArgumentException('Token ID cannot be null');
+        }
+        $params = array('token_id' => $tokenId);
+
+        $request = $this->getRequest('admin')
+            ->setMethod('DELETE')
+            ->setPath('/admin/v1/tokens/'.$tokenId);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true && $body == '') ? true : false;
+    }
+
 }
