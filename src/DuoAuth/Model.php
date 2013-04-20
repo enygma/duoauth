@@ -42,6 +42,31 @@ class Model
     }
 
     /**
+     * Validate the properties to be sure the required ones are set
+     * 
+     * @return boolean Successful validation
+     * @throws \InvalidArgumentException 
+     */
+    public function validate()
+    {
+        $properties = $this->getProperties();
+
+        foreach ($properties as $key => $property) {
+            if (!isset($property['required'])) {
+                continue;
+            }
+            if ($property['required'] === true) {
+                if ($this->$key === null) {
+                    throw new \InvalidArgumentException(
+                        'The "'.$key.'" property is required'
+                    );
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * Set properties for the model
      *
      * @param array $properties Properties to set

@@ -9,16 +9,19 @@ class Yubikey extends \DuoAuth\Devices\Token
             'type' => 'string'
         ),
         'type' => array(
-            'type' => 'string'
+            'type' => 'string',
+            'required' => true
         ),
         'serial' => array(
-            'type' => 'string'
+            'type' => 'string',
+            'required' => true
         ),
         'private_id' => array(
             'type' => 'string'
         ),
         'aes_key' => array(
-            'type' => 'string'
+            'type' => 'string',
+            'required' => true
         )
     );
 
@@ -36,15 +39,7 @@ class Yubikey extends \DuoAuth\Devices\Token
 
         // this is a Yubikey so the type is...
         $this->type = 'yk';
-
-        $required = array(
-            'type', 'serial', 'private_id', 'aes_key'
-        );
-        foreach ($required as $field) {
-            if ($this->$field == null) {
-                throw new \InvalidArgumentException('The "'.$field.'" property is required');
-            }
-        }
+        $this->validate();
 
         $params = array(
             'type' => $this->type,
