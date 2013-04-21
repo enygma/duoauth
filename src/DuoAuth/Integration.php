@@ -36,7 +36,8 @@ class Integration extends \DuoAuth\Model
             'type' => 'string'
         ),
         'name' => array(
-            'type' => 'string'
+            'type' => 'string',
+            'required' => true
         ),
         'notes' => array(
             'type' => 'string'
@@ -45,7 +46,8 @@ class Integration extends \DuoAuth\Model
             'type' => 'string'
         ),
         'type' => array(
-            'type' => 'string'
+            'type' => 'string',
+            'required' => true
         ),
         'visual_style' => array(
             'type' => 'string'
@@ -289,6 +291,23 @@ class Integration extends \DuoAuth\Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * Delete an integration by key
+     * 
+     * @param string $intKey Integration key [optional]
+     * @return boolean Success/fail of delete
+     */
+    public function delete($intKey = null)
+    {
+        $intKey = ($intKey !== null) ? $intKey : $this->integration_key;
+        $path = '/admin/v1/integrations/'.$intKey;
+
+        $request = $this->getRequest()->setMethod('DELETE')->setPath($path);
+        $response = $request->send();
+
+        return ($response->success() == true && $body == '') ? true : false;
     }
 }
 
