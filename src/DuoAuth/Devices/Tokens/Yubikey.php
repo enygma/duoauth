@@ -34,9 +34,6 @@ class Yubikey extends \DuoAuth\Devices\Token
      */
     public function save()
     {
-        $path = ($this->token_id == null)
-            ? '/admin/v1/tokens' : '/admin/v1/tokens/'.$this->token_id;
-
         // this is a Yubikey so the type is...
         $this->type = 'yk';
         $this->validate();
@@ -48,16 +45,6 @@ class Yubikey extends \DuoAuth\Devices\Token
             'aes_key' => $this->aes_key
         );
 
-        $request = $this->getRequest('admin')
-            ->setMethod('POST')->setParams($params)->setPath($path);
-
-        $response = $request->send();
-
-        if ($response->success() == true) {
-            $body = $response->getBody();
-            return $this->load($body);
-        } else {
-            return false;
-        }
+        return $this->saveToken($params);
     }
 }

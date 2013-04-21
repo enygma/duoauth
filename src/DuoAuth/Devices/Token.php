@@ -74,4 +74,28 @@ class Token extends \DuoAuth\Device
         return ($response->success() == true && $body == '') ? true : false;
     }
 
+    /**
+     * Create/update a token
+     * 
+     * @param array $params Token parameters to send
+     * @return boolean Success/fail of save
+     */
+    public function saveToken($params)
+    {
+        $path = (!isset($params['token_id']) || $params['token_id'] == null)
+            ? '/admin/v1/tokens' : '/admin/v1/tokens/'.$params['token_id'];
+
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')->setParams($params)->setPath($path);
+
+        $response = $request->send();
+
+        if ($response->success() == true) {
+            $body = $response->getBody();
+            return $this->load($body);
+        } else {
+            return false;
+        }
+    }
+
 }
