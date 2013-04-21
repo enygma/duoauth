@@ -102,7 +102,7 @@ class Token extends \DuoAuth\Device
      * Resync a token when given three codes
      * 
      * @param array $codes Token codes
-     * @param string $tokenId Internal token ID
+     * @param string $tokenId Internal token ID [optional]
      * @throws \InvalidArgumentException Bad codes list or invalid token ID
      * @return boolean Success/fail of request
      */
@@ -113,7 +113,7 @@ class Token extends \DuoAuth\Device
         }
 
         $tokenId = ($tokenId !== null) ? $tokenId : $this->token_id;
-        if ($token == null) {
+        if ($tokenId == null) {
             throw new \InvalidArgumentException('Invalid token ID');
         }
 
