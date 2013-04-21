@@ -98,4 +98,31 @@ class Token extends \DuoAuth\Device
         }
     }
 
+    /**
+     * Resync a token when given three codes
+     * 
+     * @param array $codes Token codes
+     * @param string $tokenId Internal token ID
+     * @throws \InvalidArgumentException Bad codes list or invalid token ID
+     * @return boolean Success/fail of request
+     */
+    public function resync($codes, $tokenId = null)
+    {
+        if (!is_array($codes) || count($codes)<3) {
+            throw new \InvalidArgumentException('You must provide a valid set of 3 codes');
+        }
+
+        $tokenId = ($tokenId !== null) ? $tokenId : $this->token_id;
+        if ($token == null) {
+            throw new \InvalidArgumentException('Invalid token ID');
+        }
+
+        $path = '/admin/v1/tokens/'.$tokenId.'/resync';
+        $request = $this->getRequest('admin')
+            ->setMethod('POST')->setParams($codes)->setPath($path);
+
+        $response = $request->send();
+        return ($response->success() == true && $body == '') ? true : false;
+    }
+
 }
