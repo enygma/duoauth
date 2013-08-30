@@ -310,7 +310,7 @@ class User extends \DuoAuth\Model
             $username = ($username !== null) ? $username : $this->username;
 
             $params = array(
-                'username'   => $this->username,
+                'username'   => $username,
                 'factor' => 'push',
                 'device'  => $deviceId
             );
