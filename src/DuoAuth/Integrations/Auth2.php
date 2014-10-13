@@ -11,7 +11,7 @@ class Auth2 extends \DuoAuth\Integration
      * 
      * @return \DuoAuth\Request object
      */
-    public function getRequest($integration = null)
+    public function getRequest()
     {
         $request = new \DuoAuth\Request($this->getClient());
 
