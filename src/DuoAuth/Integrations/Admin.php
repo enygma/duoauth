@@ -9,7 +9,7 @@ class Admin extends \DuoAuth\Integration
      * 
      * @return \DuoAuth\Request object
      */
-    public function getRequest()
+    public function getRequest($integration = null)
     {
         $request = new \DuoAuth\Request($this->getClient());
 
