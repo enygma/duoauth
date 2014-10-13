@@ -2,7 +2,7 @@
 
 namespace DuoAuth;
 
-class Integration extends \DuoAuth\Model
+class Integration
 {
     protected $properties = array(
         'adminapi_admins' => array(
