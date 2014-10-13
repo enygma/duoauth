@@ -17,6 +17,11 @@ class Verify extends \DuoAuth\Integration
             ->setIntKey($this->getIntegration())
             ->setSecretKey($this->getSecret());
 
+	    // add the timestamp to the hash options
+	    $request->setHashOptions(
+		    array('date' => date('r'))
+	    );
+
         return $request;
     }
 }
