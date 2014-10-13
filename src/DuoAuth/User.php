@@ -297,38 +297,43 @@ class User extends \DuoAuth\Model
      * Send a push login request to the user's device
      *     NOTE: Request waits for user to approve to finish (or timeout)
      *
-     * @param string $deviceId Internal identifier for user device
-     * @param string $username Username to send request to [optional]
+     * @param array $parameters Set of parameters (at least device and username/userid are required)
      * @param array $addlInfo Additional info to send with the push [optional]
      * @return boolean Success/fail of request
      */
-    public function sendPush($deviceId, $username = null, $addlInfo = null)
+    public function sendPush($parameters, $addlInfo = null)
     {
-        if ($this->username == null && $username == null) {
+        $username = isset( $parameters['username'] ) ? $parameters['username'] : $this->username;
+        $userid   = isset( $parameters['userid'] ) ? $parameters['userid'] : false;
+
+        if ( ! isset( $parameters['device'] ) || ( $username && $userid )) {
             return false;
-        } else {
-            $username = ($username !== null) ? $username : $this->username;
-
-            $params = array(
-                'username'   => $username,
-                'factor' => 'push',
-                'device'  => $deviceId
-            );
-
-            if ($addlInfo !== null && is_array($addlInfo)) {
-                $params['pushinfo'] = http_build_query($addlInfo);
-            }
-
-            $request = $this->getRequest('auth2')
-                ->setPath('/auth/v2/auth')
-                ->setMethod('POST')
-                ->setParams($params);
-
-            $response = $request->send();
-            $body = $response->getBody();
-
-            return ($response->success() == true && $body->result !== 'deny') ? true : false;
         }
+
+        $params = array(
+            'factor' => 'push',
+            'device'  => $parameters['device']
+        );
+
+        if ($username !== null) {
+            $params['username'] = $username;
+        } else {
+            $params['user_id'] = $userid;
+        }
+
+        if ($addlInfo !== null && is_array($addlInfo)) {
+            $params['pushinfo'] = http_build_query($addlInfo);
+        }
+
+        $request = $this->getRequest('auth2')
+            ->setPath('/auth/v2/auth')
+            ->setMethod('POST')
+            ->setParams($params);
+
+        $response = $request->send();
+        $body = $response->getBody();
+
+        return ($response->success() == true && $body->result !== 'deny') ? true : false;
     }
 
     /**
