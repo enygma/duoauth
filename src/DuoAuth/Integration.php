@@ -112,6 +112,8 @@ class Integration extends \DuoAuth\Model
                     }
                 }
             }
+        } else {
+            throw new \Exception('Configuration file not found! ['.$file.']');
         }
     }
 
