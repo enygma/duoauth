@@ -61,7 +61,7 @@ class Response
             $this->setSuccess(true);
         }
 
-        $body = json_decode($response->getBody(true));
+        $body = json_decode((string)$response->getBody());
         if (isset($body->response)) {
             $this->setBody($body->response);
         } else {

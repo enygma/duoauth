@@ -117,7 +117,7 @@ class User extends \DuoAuth\Model
             $username = ($username !== null) ? $username : $this->username;
 
             $request = $this->getRequest('auth')
-            ->setPath('/rest/v1/auth')
+            ->setPath('/auth/v2/auth')
             ->setMethod('POST')
             ->setParams(
                 array(
@@ -319,7 +319,7 @@ class User extends \DuoAuth\Model
                 $params['pushinfo'] = http_build_query($addlInfo);
             }
 
-            $request = $this->getRequest('auth2')
+            $request = $this->getRequest('auth')
                 ->setPath('/auth/v2/auth')
                 ->setMethod('POST')
                 ->setParams($params);

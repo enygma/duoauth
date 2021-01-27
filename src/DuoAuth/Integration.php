@@ -124,7 +124,7 @@ class Integration extends \DuoAuth\Model
      */
     public function getClient()
     {
-        $client = new \Guzzle\Http\Client();
+        $client = new \GuzzleHttp\Client(['headers' => ['Date' => date('r')]]);
         $this->setClient($client);
         return $client;
     }

@@ -110,6 +110,7 @@ class Request
             $hash = array_merge($hash, $addlHashOptions);
         }
 
+        $hash[] = date('r');
         $hash[] = strtoupper($this->getMethod());
         $hash[] = $this->getHostname();
         $hash[] = $this->getPath();
@@ -147,17 +148,21 @@ class Request
         $params = $this->getParams();
         ksort($params);
 
+        // Guzzle doesn't add the date header, so we put it in manually
+        $options = [
+            'auth' => [$this->getIntKey(), $hash]
+        ];
+
         if ($method == 'get') {
             $path .= '?'.http_build_query($params);
+        } elseif ($method == 'post') {
+            $options['form_params'] = $params;
         }
-
-        // Guzzle doesn't add the date header, so we put it in manually
-        $request = $client->$method($path, array('Date' => date('r')), $params)
-            ->setAuth($this->getIntKey(), $hash);
 
         $response = new \DuoAuth\Response();
         try {
-            $response->setData($request->send());
+            $resp = $client->request($method, $path, $options);
+            $response->setData($resp);
             return $response;
 
         } catch (\Exception $e) {
