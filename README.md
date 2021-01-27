@@ -1,6 +1,8 @@
 duoauth
 =======
 
+*NOTE: This library is no longer maintained.*
+
 [![Build Status](https://secure.travis-ci.org/enygma/duoauth.png?branch=master)](http://travis-ci.org/enygma/duoauth)
 
 PHP Library for easy integration with [Duo Security](http://duosecurity.com)'s Two-Factor REST API
@@ -12,7 +14,7 @@ They have a "developer" plan that's free and allows for up to 10 users on the ap
 
 Find out more here: http://duosecurity.com
 
-REST docmentation: https://www.duosecurity.com/docs/duorest
+REST documentation: https://www.duosecurity.com/docs/duorest
 
 ### Creating an Account
 
@@ -31,7 +33,7 @@ Include in your `composer.json` file:
 ```
 {
     "require": {
-        "enygma/duoauth": "1.*"
+        "enygma/duoauth": "2.*"
     }
 }
 ```
